@@ -1,0 +1,84 @@
+DALVIK THREADS:
+"main" prio=5 tid=1 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x40020998 self=0xce38
+  | sysTid=1274 nice=0 sched=0/0 cgrp=default handle=-1345017744
+  | schedstat=( 2180145260 6354126016 4906 )
+  at com.android.server.SystemServer.init1(Native Method)
+  at com.android.server.SystemServer.main(SystemServer.java:645)
+  at java.lang.reflect.Method.invokeNative(Native Method)
+  at java.lang.reflect.Method.invoke(Method.java:521)
+  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:868)
+  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:626)
+  at dalvik.system.NativeStart.main(Native Method)
+
+"Binder Thread #14" prio=5 tid=60 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461a81e0 self=0x444f20
+  | sysTid=2288 nice=0 sched=0/0 cgrp=default handle=4262064
+  | schedstat=( 123962408 3049591052 593 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #13" prio=5 tid=59 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x463e9780 self=0x4428c8
+  | sysTid=2280 nice=0 sched=0/0 cgrp=default handle=2495448
+  | schedstat=( 281341537 3178283686 726 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #12" prio=5 tid=39 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4644ee00 self=0x28aeb0
+  | sysTid=2238 nice=0 sched=0/0 cgrp=default handle=3083352
+  | schedstat=( 258453365 3641784655 831 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #11" prio=5 tid=58 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x463c8b68 self=0x3ea808
+  | sysTid=1946 nice=0 sched=0/0 cgrp=default handle=4108776
+  | schedstat=( 1422546407 5823760978 3490 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"NetworkLocationProvider" prio=5 tid=57 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46244b68 self=0x4650f0
+  | sysTid=1516 nice=10 sched=0/0 cgrp=bg_non_interactive handle=4608560
+  | schedstat=( 44006378 31866180395 769 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4630bb90> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.google.android.location.NetworkLocationProvider.run(NetworkLocationProvider.java:1099)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"Thread-62" prio=5 tid=56 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46234610 self=0x4170a8
+  | sysTid=1514 nice=0 sched=0/0 cgrp=default handle=4289000
+  | schedstat=( 8880627 4500854497 498 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-61" prio=5 tid=55 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461b0130 self=0x414c80
+  | sysTid=1513 nice=0 sched=0/0 cgrp=default handle=4279744
+  | schedstat=( 10040274 4663360612 495 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-60" prio=5 tid=54 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461afe30 self=0x414290
+  | sysTid=1512 nice=0 sched=0/0 cgrp=default handle=4273416
+  | schedstat=( 8178712 4667327895 494 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-59" prio=5 tid=53 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x462471f0 self=0x4133c8
+  | sysTid=1511 nice=0 sched=0/0 cgrp=default handle=4274448
+  | schedstat=( 9399405 4492736837 494 )
+  at java.lang.Object.wait(Native Method)

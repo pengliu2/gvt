@@ -1,0 +1,22 @@
+KERNEL LOG: suspend
+KERNEL LOG:<6>[21220.077728] PM: Syncing filesystems ... done.
+KERNEL LOG:<7>[21220.155822] PM: Preparing system for mem sleep
+KERNEL LOG:<4>[21220.156311] Freezing user space processes ... (elapsed 0.08 seconds) done.
+KERNEL LOG:<4>[21220.242645] Freezing remaining freezable tasks ... (elapsed 0.00 seconds) done.
+KERNEL LOG:<7>[21220.243225] PM: Entering mem sleep
+KERNEL LOG:<4>[21220.243316] Suspending console(s) (use no_console_suspend to debug)
+KERNEL LOG:<7>[21220.258270] vfp_pm_save_context: saving vfp state
+KERNEL LOG:<6>[21462.469787] Successfully put all powerdomains to target state
+KERNEL LOG:<6>[21462.469879] WAKEDUP BY: WKUP_MOD(0x108), MPU_IRQSTATUS(0x18010611), INTC_IRQ0(0x20000800), GPIO1(0x1), 
+KERNEL LOG:<6>[21462.470672] wakeup wake lock: cpcap-irq
+KERNEL LOG:<7>[21462.614135] PM: Finishing wakeup.
+KERNEL LOG:<4>[21462.614379] Restarting tasks ... done.
+KERNEL LOG:
+EVENT LOG:10-12 18:14:00.000  EVENT LOG 1
+EVENT LOG:10-12 1814:43.265  EVENT LOG 2
+RADIO LOG:10-12 18:14:30.000 RADIO LOG 1
+RADIO LOG:10-12 18:14:43.000 RADIO LOG 2
+RADIO LOG:10-12 18:14:50.000 RADIO LOG 3
+EVENT LOG:10-12 18:14:55.000 EVENT LOG 3
+RADIO LOG:10-12 18:14:59.000 RADIO LOG 4
+RADIO LOG:

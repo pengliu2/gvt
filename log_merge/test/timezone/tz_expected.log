@@ -1,0 +1,6 @@
+main.txt:10-01 11:01:54.000 main
+kernel.txt:<6>[    1.000000] suspend: exit suspend, ret = -16 (2010-10-01 05:40:01.000000000 UTC)
+main.txt:10-01 11:10:01.000 main
+kernel.txt:<6>[    1.279693] kernel
+main.txt:10-01 11:10:02.629 main
+kernel.txt:<6>[    2.910491] kernel

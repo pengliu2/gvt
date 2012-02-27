@@ -1,0 +1,2 @@
+SYSTEM LOG:--------- beginning of /dev/log/main
+SYSTEM LOG:10-13 07:54:36.796  1371  1371 D PowerManager: Partial WakeLock: Acquired TAG: PollingManager isRefCounted: true Ref Count: 1 PID: 1371 UID: 10077 Held: true

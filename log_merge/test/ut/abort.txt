@@ -1,0 +1,22 @@
+<4>[  162.755104] Freezing user space processes ... 
+<4>[  163.296932] active wake lock GTALK_CONN
+<6>[  163.297283] Freezing of user space  aborted
+<4>[  163.373966] Restarting tasks ... done.
+<6>[  163.400671] suspend: exit suspend, ret = -16 (1970-01-02 00:24:10.046023144 UTC)
+<3>[  163.530718] msmsdcc_vreg_enable: regulator_enable(sdc_vddp) failed. rc=-22
+<4>[  165.849229] Freezing user space processes ... (elapsed 0.02 seconds) done.
+<4>[  166.126629] Freezing remaining freezable tasks ... (elapsed 0.01 seconds) done.
+<4>[  166.147565] Suspending console(s) (use no_console_suspend to debug)
+<6>[  166.174027] PM: suspend of devices complete after 13.490 msecs
+<6>[  166.177506] PM: late suspend of devices complete after 3.479 msecs
+<4>[  166.177536] Disabling non-boot CPUs ...
+<6>[  166.178116] msm_pm_enter
+<6>[  166.178116] msm_pm_enter: power collapse
+<6>[  166.178116] msm_mpm_irqs_detectable: cannot monitor 000000,00000000,00000000,00000000,00000000,00000000,00020000,00000000,00000000,00000000,00000000,00000000,00000000,00000000
+<6>[  166.178116] suspend average current drain: 60.859(mA) @2514970242 ns
+<6>[  166.178116] msm_pm_enter: return
+<6>[  166.181290] PM: early resume of devices complete after 3.174 msecs
+<6>[  166.182572] wakeup wake lock: msm_ipc_router_smd_xprt
+<6>[  166.270837] PM: resume of devices complete after 87.962 msecs
+<4>[  166.338013] Restarting tasks ... done.
+<6>[  166.366458] suspend: exit suspend, ret = 0 (1970-01-02 00:24:14.904034447 UTC)

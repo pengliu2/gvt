@@ -1,0 +1,1449 @@
+========================================================
+== dumpstate: 2010-10-13 08:40:04
+========================================================
+
+Build: VZW
+Bootloader: D012
+Radio: unknown
+Network: Verizon Wireless
+Kernel: Linux version 2.6.32.9-eng-g1fef90c (vwm736@il93lnxdroid09) (gcc version 4.4.0 (GCC) ) #1 PREEMPT Sun Oct 10 22:04:46 CDT 2010
+Command line: console=ttyS2,115200n8 rw mem=498M@0x80C00000 init=/init ip=off brdrev=P3A androidboot.bootloader=0x0000  mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(userdata) androidboot.mode=normal androidboot.bootloader=D012 androidboot.serialno=015A5F5D0202702A
+
+------ MEMORY INFO (/proc/meminfo) ------
+MemTotal:         488664 kB
+MemFree:            4036 kB
+Buffers:           35236 kB
+Cached:           149884 kB
+SwapCached:            0 kB
+Active:           222624 kB
+Inactive:         153688 kB
+Active(anon):     170032 kB
+Inactive(anon):    22152 kB
+Active(file):      52592 kB
+Inactive(file):   131536 kB
+Unevictable:         148 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               284 kB
+Writeback:             0 kB
+AnonPages:        191364 kB
+Mapped:            86768 kB
+Shmem:               844 kB
+Slab:              18504 kB
+SReclaimable:       8464 kB
+SUnreclaim:        10040 kB
+KernelStack:        5504 kB
+PageTables:        21128 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:      244332 kB
+Committed_AS:    9387416 kB
+VmallocTotal:     401408 kB
+VmallocUsed:      118492 kB
+VmallocChunk:     203612 kB
+
+------ CPU INFO (top -n 1 -d 1 -m 30 -t) ------
+
+
+
+User 5%, System 18%, IOW 25%, IRQ 0%
+User 7 + Nice 0 + Sys 23 + Idle 63 + IOW 32 + IRQ 0 + SIRQ 0 = 125
+
+  PID   TID CPU% S     VSS     RSS PCY UID      Thread          Proc
+ 2539  2539  22% R   1064K    624K  fg shell    top             top
+ 1919  1919   2% S 163632K  21568K  bg system   rola.blur.setup com.motorola.blur.setup
+  347   347   1% S      0K      0K  fg root     kswapd0         
+    3     3   0% S      0K      0K  fg root     ksoftirqd/0     
+  527   527   0% S      0K      0K  fg root     usb_mass_storag 
+  677   677   0% S      0K      0K  fg root     mmcqd           
+ 1160  1160   0% S   1268K    680K  fg mot_accy battd           /system/bin/battd
+  211   211   0% S      0K      0K  fg root     omap2_mcspi     
+  214   214   0% S      0K      0K  fg root     cpcap_irq/0     
+  200   200   0% S      0K      0K  fg root     kblockd/0       
+  204   204   0% S      0K      0K  fg root     omap_serial     
+  275   275   0% S      0K      0K  fg root     ksuspend_usbd   
+  280   280   0% S      0K      0K  fg root     khubd           
+  305   305   0% S      0K      0K  fg root     kmmcd           
+  312   312   0% S      0K      0K  fg root     bluetooth       
+  346   346   0% S      0K      0K  fg root     khungtaskd      
+  349   349   0% S      0K      0K  fg root     aio/0           
+  350   350   0% S      0K      0K  fg root     crypto/0        
+  443   443   0% S      0K      0K  fg root     kxtf9_wq        
+  447   447   0% S      0K      0K  fg root     omap_mdm_ctrl_w 
+  484   484   0% S      0K      0K  fg root     mtdblockd       
+  512   512   0% S      0K      0K  fg root     klink_driver_wq 
+  535   535   0% S      0K      0K  fg root     qtouch_obp_ts_w 
+  544   544   0% S      0K      0K  fg root     bu52014hfv_wq   
+  550   550   0% S      0K      0K  fg root     als_wq          
+  581   581   0% S      0K      0K  fg root     bridge_work-que 
+  582   582   0% S      0K      0K  fg root     bridge_recovery 
+  588   588   0% S      0K      0K  fg root     w1_bus_master1  
+  597   597   0% S      0K      0K  fg root     kstriped        
+  599   599   0% S      0K      0K  fg root     kondemand/0     
+[top: 1.6s elapsed]
+
+------ PROCRANK (procrank) ------
+  PID      Vss      Rss      Pss      Uss  cmdline
+ 1274   70060K   66840K   42325K   38384K  system_server
+ 1460   41492K   41488K   16946K   13172K  android.process.acore
+ 1397   40640K   40636K   16164K   12624K  com.motorola.blur.home
+ 1362   47752K   47748K   15290K   13348K  com.motorola.blur.service.main
+ 1371   32660K   32656K   11089K    9884K  com.motorola.blur.service.blur
+ 1360   29524K   29520K    8382K    6764K  com.android.phone
+ 1536   28656K   28652K    7101K    6208K  com.motorola.blur.friendfeed
+ 2319   29824K   29820K    6675K    3512K  com.motorola.blur.datamanager.app
+ 1567   28860K   28856K    6474K    5540K  com.motorola.blur.home.newsstatus
+ 1162   28928K   28924K    6432K    4544K  zygote
+ 1333   25320K   25316K    5608K    5144K  com.motorola.blur.providers.contacts
+ 1479   25552K   25548K    5429K    4692K  com.google.process.gapps
+ 1449   23360K   23356K    5207K    4840K  com.motorola.spellingcheckservice
+ 1642   25072K   25064K    4456K    3776K  com.android.calendar
+ 1808   24660K   24656K    4329K    3656K  com.motorola.blur.conversations
+ 1379   22768K   22764K    4114K    3664K  com.nuance.android.vsuite.vsuiteapp
+ 1995   23780K   23776K    3928K    3272K  com.amazon.mp3
+ 1582   24328K   24324K    3846K    3156K  com.motorola.blur.home.message
+ 1522   24424K   24420K    3809K    3060K  com.motorola.blur.weather
+ 1624   23688K   23684K    3746K    3100K  com.motorola.blur.contacts
+ 1476   22660K   22656K    3666K    3224K  android.process.media
+ 1897   22912K   22908K    3646K    3044K  com.android.vending
+ 1529   21736K   21732K    3608K    3224K  android.tts
+ 1752   23260K   23256K    3598K    2968K  com.google.android.gm
+ 1721   23308K   23304K    3315K    2776K  com.motorola.blur.contacts.data
+ 1745   21940K   21936K    3277K    2792K  com.motorola.batterymanager:deviceStats
+ 1681   22152K   22148K    3258K    2828K  com.motorola.android.datamanager
+ 1355   22520K   22516K    3139K    2320K  com.android.inputmethod.latin
+ 1431   22140K   22136K    3024K    2452K  com.motorola.usb
+ 1788   22280K   22276K    2985K    2356K  com.skype.android.verizon
+ 1828   21664K   21660K    2840K    2444K  com.fusionone.android.sync.service
+ 1364   21640K   21632K    2834K    2356K  com.motorola.batterymanager
+ 1876   21820K   21816K    2799K    2344K  com.motorola.vvm
+ 1428   21744K   21740K    2771K    2240K  com.motorola.android.syncml.service
+ 1962   22248K   22244K    2755K    2140K  com.google.android.googlequicksearchbox
+ 1928   22460K   22456K    2739K    2172K  com.motorola.photowidget
+ 1451   21548K   21544K    2654K    2168K  com.android.music
+ 1857   22280K   22276K    2653K    2020K  com.motorola.blur.alarmclock
+ 1919   21572K   21568K    2614K    2104K  com.motorola.blur.setup
+ 1763   21312K   21308K    2483K    2048K  com.motorola.process.system
+ 1380   20852K   20848K    2440K    2004K  com.motorola.PerformanceManager
+ 2159   21740K   21736K    2368K    1840K  com.motorola.blur.socialmessaging
+ 1975   21124K   21120K    2307K    1836K  com.google.android.apps.uploader
+ 2108   21492K   21488K    2257K    1596K  com.motorola.mediashare
+ 1907   20684K   20680K    2087K    1696K  com.motorola.android.simcontactadapter
+ 1938   20928K   20924K    2083K    1652K  com.motorola.togglewidgets
+ 1688   20484K   20480K    2058K    1664K  com.motorola.inpocket
+ 1847   20508K   20504K    2007K    1560K  com.motorola.videoplayer
+ 1773   20120K   20116K    1925K    1516K  com.motorola.motoacr
+ 1869   20000K   19996K    1815K    1420K  com.motorola.android.AudioEffectSettings
+ 1714   20176K   20172K    1798K    1396K  com.motorola.android.buacontactadapter
+ 1952   20076K   20072K    1791K    1376K  com.motorola.protips
+ 1887   19908K   19904K    1790K    1412K  com.google.android.partnersetup
+ 1163    4800K    4796K    1785K    1560K  /system/bin/mediaserver
+ 1653   19756K   19752K    1785K    1420K  com.motorola.globalunplug
+ 1429   19180K   19176K    1526K    1156K  com.motorola.atcmd
+ 2540    1264K    1260K    1051K    1048K  procrank
+ 1171    2396K    2392K     703K     588K  /system/bin/tcmd
+ 1156    1136K    1132K     548K     528K  /system/bin/rild
+ 2415     752K     748K     318K     308K  /system/bin/pppd-ril
+ 1164     712K     708K     291K     188K  /system/bin/dbus-daemon
+    1     276K     276K     244K     244K  /init
+ 1153     588K     584K     202K     188K  /system/bin/vold
+ 1160     684K     680K     193K     184K  /system/bin/battd
+ 1154     548K     544K     173K     160K  /system/bin/netd
+ 1149     192K     192K     168K     168K  /sbin/adbd
+ 1181     440K     436K     154K     136K  /system/bin/secclkd
+ 1266     480K     340K     144K     140K  /system/bin/smoduled
+ 2538     420K     416K     141K     136K  dumpstate
+ 2537     324K     320K     131K     128K  /system/bin/sh
+ 1172     468K     464K     125K     120K  /system/bin/akmd2
+ 1159     364K     360K     108K     104K  /system/bin/usbd
+ 1151     340K     336K     105K      88K  /system/bin/ecckeyd
+ 1166     328K     324K      99K      96K  /system/bin/installd
+ 1179     332K     328K      95K      92K  /system/bin/mdm_panicd
+ 1178     428K     420K      89K      84K  /system/bin/ftmipcd
+ 1170     400K     396K      85K      80K  /system/bin/keystore
+ 1152     288K     284K      79K      76K  /system/bin/servicemanager
+ 1155     260K     256K      71K      68K  /system/bin/debuggerd
+[procrank: 1.4s elapsed]
+
+------ VIRTUAL MEMORY STATS (/proc/vmstat) ------
+nr_free_pages 1191
+nr_inactive_anon 6367
+nr_active_anon 41718
+nr_inactive_file 31925
+nr_active_file 13753
+nr_unevictable 37
+nr_mlock 0
+nr_anon_pages 47874
+nr_mapped 21692
+nr_file_pages 45926
+nr_dirty 67
+nr_writeback 0
+nr_slab_reclaimable 2142
+nr_slab_unreclaimable 2511
+nr_page_table_pages 5283
+nr_kernel_stack 689
+nr_unstable 0
+nr_bounce 0
+nr_vmscan_write 0
+nr_writeback_temp 0
+nr_isolated_anon 0
+nr_isolated_file 0
+nr_shmem 211
+pgpgin 207424
+pgpgout 190878
+pswpin 0
+pswpout 0
+pgalloc_normal 305070
+pgalloc_movable 0
+pgfree 306424
+pgactivate 19306
+pgdeactivate 6400
+pgfault 470271
+pgmajfault 1492
+pgrefill_normal 6400
+pgrefill_movable 0
+pgsteal_normal 2893
+pgsteal_movable 0
+pgscan_kswapd_normal 5984
+pgscan_kswapd_movable 0
+pgscan_direct_normal 0
+pgscan_direct_movable 0
+pginodesteal 0
+slabs_scanned 6656
+kswapd_steal 2893
+kswapd_inodesteal 0
+pageoutrun 64
+allocstall 0
+pgrotated 0
+unevictable_pgs_culled 37
+unevictable_pgs_scanned 0
+unevictable_pgs_rescued 0
+unevictable_pgs_mlocked 0
+unevictable_pgs_munlocked 0
+unevictable_pgs_cleared 0
+unevictable_pgs_stranded 0
+unevictable_pgs_mlockfreed 0
+
+------ VMALLOC INFO (/proc/vmallocinfo) ------
+0xbf000000-0xbf002000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf006000-0xbf008000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf00c000-0xbf00e000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf012000-0xbf014000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf018000-0xbf01a000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf01e000-0xbf021000   12288 module_alloc_update_bounds+0xc/0x44 pages=2 vmalloc
+0xbf025000-0xbf02a000   20480 module_alloc_update_bounds+0xc/0x44 pages=4 vmalloc
+0xbf02f000-0xbf031000    8192 module_alloc_update_bounds+0xc/0x44 pages=1 vmalloc
+0xbf035000-0xbf046000   69632 module_alloc_update_bounds+0xc/0x44 pages=16 vmalloc
+0xdf808000-0xdf80a000    8192 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xdf80b000-0xdf80d000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xdf80e000-0xdf812000   16384 NewVMallocLinuxMemArea+0x2c/0x70 pages=3 vmalloc
+0xdf813000-0xdf818000   20480 iommu_vmalloc+0x48/0x16c pages=4 vmalloc
+0xdf819000-0xdf827000   57344 iommu_vmalloc+0x48/0x16c pages=13 vmalloc
+0xdf828000-0xdf82a000    8192 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xdf830000-0xdf839000   36864 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xdf840000-0xdf861000  135168 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xdf8a6000-0xe08a7000 16781312 iommu_vmalloc+0x48/0x16c pages=4096 vmalloc vpages
+0xe08c0000-0xe08d9000  102400 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe08da000-0xe08dc000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe08dd000-0xe08df000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe08e0000-0xe08f5000   86016 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe08f6000-0xe0977000  528384 MEM_Calloc+0x5c/0x7c pages=128 vmalloc
+0xe0978000-0xe097a000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe097b000-0xe097d000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe097e000-0xe0980000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0980000-0xe09a1000  135168 binder_mmap+0xb0/0x200 ioremap
+0xe09b9000-0xe09bd000   16384 NewVMallocLinuxMemArea+0x2c/0x70 pages=3 vmalloc
+0xe09be000-0xe09c3000   20480 NewVMallocLinuxMemArea+0x2c/0x70 pages=4 vmalloc
+0xe09c4000-0xe09d3000   61440 NewVMallocLinuxMemArea+0x2c/0x70 pages=14 vmalloc
+0xe09d4000-0xe09e1000   53248 NewVMallocLinuxMemArea+0x2c/0x70 pages=12 vmalloc
+0xe09e2000-0xe09f3000   69632 NewVMallocLinuxMemArea+0x2c/0x70 pages=16 vmalloc
+0xe09f4000-0xe09f6000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe09f7000-0xe09f9000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0a00000-0xe0bc4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe0bc8000-0xe0bcd000   20480 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe0c00000-0xe0f24000 3293184 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe0f36000-0xe0f38000    8192 internal_get_zeroed_page_vmap+0x84/0xd0 ioremap vmalloc
+0xe0f3c000-0xe0f3e000    8192 internal_get_zeroed_page_vmap+0x84/0xd0 ioremap vmalloc
+0xe0f70000-0xe0f72000    8192 internal_kmalloc_vmap+0xb8/0x118 ioremap vmalloc
+0xe0f78000-0xe0f7d000   20480 internal_get_free_pages_vmap+0xb8/0x108 ioremap vmalloc
+0xe0f7e000-0xe0f80000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fb3000-0xe0fb5000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fb6000-0xe0fb8000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fb9000-0xe0fbb000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fbc000-0xe0fbe000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fbf000-0xe0fd1000   73728 NewVMallocLinuxMemArea+0x2c/0x70 pages=17 vmalloc
+0xe0fd2000-0xe0fd4000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fd5000-0xe0fd7000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fd8000-0xe0fda000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fdb000-0xe0fdd000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fde000-0xe0fe0000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fe1000-0xe0fe3000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0fe4000-0xe0ff6000   73728 NewVMallocLinuxMemArea+0x2c/0x70 pages=17 vmalloc
+0xe0ff7000-0xe0ff9000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0ffa000-0xe0ffc000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe0ffd000-0xe0fff000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe1000000-0xe1601000 6295552 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe1602000-0xe1614000   73728 NewVMallocLinuxMemArea+0x2c/0x70 pages=17 vmalloc
+0xe1615000-0xe161a000   20480 NewVMallocLinuxMemArea+0x2c/0x70 pages=4 vmalloc
+0xe161b000-0xe161d000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe161e000-0xe1625000   28672 NewVMallocLinuxMemArea+0x2c/0x70 pages=6 vmalloc
+0xe1626000-0xe162d000   28672 NewVMallocLinuxMemArea+0x2c/0x70 pages=6 vmalloc
+0xe162e000-0xe1630000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe1631000-0xe1633000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe166c000-0xe166e000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe1680000-0xe16c1000  266240 internal_get_free_pages_vmap+0xb8/0x108 ioremap vmalloc
+0xe16d8000-0xe16da000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16db000-0xe16dd000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16de000-0xe16e0000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16e1000-0xe16e3000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16e4000-0xe16e6000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16f0000-0xe16f2000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe16f3000-0xe16f5000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe1758000-0xe175a000    8192 NewVMallocLinuxMemArea+0x2c/0x70 pages=1 vmalloc
+0xe1800000-0xe19c4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe1a00000-0xe1bc4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe1c00000-0xe1dc4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe1e00000-0xe1fc4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2000000-0xe21c4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2200000-0xe23c4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2400000-0xe25c4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2600000-0xe27c4000 1851392 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2800000-0xe29e3000 1978368 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2a00000-0xe2be3000 1978368 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2c00000-0xe2de3000 1978368 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe2e00000-0xe2fe3000 1978368 __arm_ioremap_pfn+0x58/0x154 ioremap
+0xe3000000-0xe3129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3200000-0xe3329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3400000-0xe3529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3800000-0xe3929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3a00000-0xe3b29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3c00000-0xe3d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe3e00000-0xe3f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4000000-0xe4129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4200000-0xe4329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4400000-0xe4529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4600000-0xe4729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4800000-0xe4929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4a00000-0xe4b29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4c00000-0xe4d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe4e00000-0xe4f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5000000-0xe5129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5200000-0xe5329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5400000-0xe5529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5600000-0xe5729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5800000-0xe5929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5a00000-0xe5b29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5c00000-0xe5d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe5e00000-0xe5f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe6200000-0xe6329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe6400000-0xe6529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe6800000-0xe6929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe6c00000-0xe6d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe6e00000-0xe6f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe7400000-0xe7529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe7600000-0xe7729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe7c00000-0xe7d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe7e00000-0xe7f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe8200000-0xe8329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe8400000-0xe8529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe8600000-0xe8729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe8800000-0xe8929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe8c00000-0xe8d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9000000-0xe9129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9400000-0xe9529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9800000-0xe9929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9a00000-0xe9b29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9c00000-0xe9d29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xe9e00000-0xe9f29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xea000000-0xea129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xea200000-0xea329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xea400000-0xea529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xea600000-0xea729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xea800000-0xea929000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeaa00000-0xeab29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeac00000-0xead29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeae00000-0xeaf29000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeb000000-0xeb129000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeb200000-0xeb329000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeb400000-0xeb529000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeb600000-0xeb729000 1216512 binder_mmap+0xb0/0x200 ioremap
+0xeb800000-0xeb929000 1216512 binder_mmap+0xb0/0x200 ioremap
+
+------ SLAB INFO (/proc/slabinfo) ------
+slabinfo - version: 2.1 (statistics)
+# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail> : globalstat <listallocs> <maxobjs> <grown> <reaped> <error> <maxfreeable> <nodeallocs> <remotefrees> <alienoverflow> : cpustat <allochit> <allocmiss> <freehit> <freemiss>
+xfrm6_tunnel_spi       0      0     64   59    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+fib6_nodes             1     67     56   67    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      16     16     1    0 				   0    0    0    0    0 : cpustat      0      1      0      0
+ip6_dst_cache          1     15    256   15    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      15     15     1    0 				   0    0    0    0    0 : cpustat      0      1      0      0
+ndisc_cache            1     24    160   24    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      16     16     1    0 				   0    0    0    0    0 : cpustat      0      1      0      0
+RAWv6                  4      6    640    6    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat       6      6     1    0 				   0    0    0    0    0 : cpustat      3      1      0      0
+UDPLITEv6              0      0    624    6    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+UDPv6                  0      0    624    6    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      30      6     5    5 				   0    0    0    0    0 : cpustat      6      5     11      0
+tw_sock_TCPv6          0      0    152   26    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      32     16     2    2 				   0    0    0    0    0 : cpustat      3      2      5      0
+request_sock_TCPv6      0      0    136   29    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      16     16     1    1 				   0    0    0    0    0 : cpustat      0      1      1      0
+TCPv6                  4      6   1208    3    1 : tunables   24   12    0 : slabdata      2      2      0 : globalstat      29      6     2    0 				   0    0    0    0    0 : cpustat      9     14     19      0
+nf_conntrack_expect      0      0    168   23    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+nf_conntrack_c067f2a8      1     17    232   17    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     144     17     1    0 				   0    0    0    0    0 : cpustat     18     14     31      0
+flow_cache             0      0    104   37    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_crypt_io            0      0    128   30    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+kcopyd_job             0      0    344   11    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_uevent              0      0   2488    3    2 : tunables   24   12    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_rq_clone_bio_info      0      0     32  113    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_rq_target_io        0      0    256   15    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_target_io           0      0     40   92    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dm_io                  0      0     48   78    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+img-mmap             214    336     80   48    1 : tunables   32   16    0 : slabdata      7      7      0 : globalstat     456    384     8    1 				   0    1    0    0    0 : cpustat    458     29    264      9
+img-mm               308    477     72   53    1 : tunables   32   16    0 : slabdata      9      9      0 : globalstat     580    509    10    0 				   0    0    0    0    0 : cpustat    574     42    297     11
+cfq_io_context       176    192    120   32    1 : tunables   32   16    0 : slabdata      6      6      0 : globalstat     313    177     6    0 				   0    0    0    0    0 : cpustat    224     27     87      0
+cfq_queue            174    174    136   29    1 : tunables   32   16    0 : slabdata      6      6      0 : globalstat     343    174     6    0 				   0    0    0    0    0 : cpustat    228     26     87      0
+fat_inode_cache        0      0    408    9    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      54     36     4    4 				   0    0    0    0    0 : cpustat     47      6     53      0
+fat_cache              0      0     48   78    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      48     38     1    1 				   0    0    0    0    0 : cpustat     43      3     46      0
+journal_handle        11     78     48   78    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      80     18     3    2 				   0    0    0    0    0 : cpustat  76614      5  76619      0
+journal_head          88     88     88   44    1 : tunables   32   16    0 : slabdata      2      2      0 : globalstat    3139    500    13    1 				   0    1    0    0    0 : cpustat  45387    200  45322    183
+revoke_table          10     92     40   92    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      16     16     1    0 				   0    0    0    0    0 : cpustat      9      1      0      0
+revoke_record          0      0     40   92    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat     112     16     7    7 				   0    0    0    0    0 : cpustat      6      7     13      0
+ext3_inode_cache    1296   1296    512    8    1 : tunables   32   16    0 : slabdata    162    162      0 : globalstat    1448   1296   162    0 				   0    0    0    0    0 : cpustat   3217    194   2119      0
+ext3_xattr             0      0     80   48    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dquot                  0      0    192   20    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+kioctx                 0      0    184   21    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+kiocb                  0      0    168   23    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+inotify_event_private_data      9     92     40   92    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      32     16     2    1 				   0    0    0    0    0 : cpustat     54      2     56      0
+inotify_inode_mark_entry     15     48     80   48    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      48     22     1    0 				   0    0    0    0    0 : cpustat      4      3      1      0
+dnotify_mark_entry      0      0     80   48    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+dnotify_struct         0      0     48   78    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+fasync_cache           0      0     40   92    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+ashmem_range_cache     23     67     56   67    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     112     41     1    0 				   0    0    0    0    0 : cpustat    409      7    393      0
+ashmem_area_cache    185    252    312   12    1 : tunables   32   16    0 : slabdata     21     21      0 : globalstat     790    252    21    0 				   0    0    0    0    0 : cpustat   4263     61   4133     15
+nsproxy                0      0     48   78    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+posix_timers_cache      0      0    128   30    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+uid_cache             46     53     72   53    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     112     53     1    0 				   0    0    0    0    0 : cpustat     48      8     14      0
+iovm_area_cache        2     67     56   67    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      16     16     1    0 				   0    0    0    0    0 : cpustat      1      1      0      0
+iopte_cache           17     18   3072    2    2 : tunables   24   12    0 : slabdata      9      9      0 : globalstat      18     18     9    0 				   0    0    0    0    0 : cpustat      8      9      0      0
+UNIX                 162    162    408    9    1 : tunables   32   16    0 : slabdata     18     18      0 : globalstat     901    171    19    1 				   0    0    0    0    0 : cpustat    614    111    573      0
+UDP-Lite               0      0    496    8    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+tcp_bind_bucket        5     78     48   78    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     176     25     1    0 				   0    0    0    0    0 : cpustat     12     11     18      0
+inet_peer_cache        1     53     72   53    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      16     16     1    0 				   0    0    0    0    0 : cpustat      0      1      0      0
+secpath_cache          0      0     56   67    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+xfrm_dst_cache         0      0    296   13    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+ip_fib_alias           0      0     40   92    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+ip_fib_hash            7     59     64   59    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      48     20     1    0 				   0    0    0    0    0 : cpustat      9      3      5      0
+ip_dst_cache           0      0    272   14    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      57     28     2    2 				   0    0    0    0    0 : cpustat     13      6     19      0
+arp_cache              0      0    152   26    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat      32     17     1    1 				   0    0    0    0    0 : cpustat      0      2      2      0
+RAW                    2      8    480    8    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat       8      8     1    0 				   0    0    0    0    0 : cpustat      1      1      0      0
+UDP                    3      8    496    8    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      53      8     1    0 				   0    0    0    0    0 : cpustat     16      9     22      0
+tw_sock_TCP            0      0    120   32    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+request_sock_TCP       0      0     96   40    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+TCP                    2      7   1080    7    2 : tunables   24   12    0 : slabdata      1      1      0 : globalstat       7      7     1    0 				   0    0    0    0    0 : cpustat      2      1      1      0
+eventpoll_pwq          0      0     64   59    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+eventpoll_epi          0      0     96   40    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+blkdev_queue          27     27   1224    3    1 : tunables   24   12    0 : slabdata      9      9      0 : globalstat      27     27     9    0 				   0    0    0    0    0 : cpustat     18      9      0      0
+blkdev_requests       16     34    224   17    1 : tunables   32   16    0 : slabdata      2      2      0 : globalstat     281    101     6    2 				   0    1    0    0    0 : cpustat  30774     26  30783      5
+blkdev_ioc           179    212     72   53    1 : tunables   32   16    0 : slabdata      4      4      0 : globalstat     372    179     4    0 				   0    0    0    0    0 : cpustat    233     27     93      0
+fsnotify_event_holder      0      0     40   92    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+fsnotify_event        25     48     80   48    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      48     32     2    1 				   0    0    0    0    0 : cpustat     53      3     56      0
+bio-0                  9     54    144   27    1 : tunables   32   16    0 : slabdata      2      2      0 : globalstat   13643    529   170    3 				   0    1    0    0    0 : cpustat  73987    911  74057    839
+biovec-256             2      2   3096    2    2 : tunables   24   12    0 : slabdata      1      1      0 : globalstat       2      2     1    0 				   0    0    0    0    0 : cpustat      1      1      0      0
+biovec-128             0      0   1560    5    2 : tunables   24   12    0 : slabdata      0      0      0 : globalstat      85     15     8    8 				   0    0    0    0    0 : cpustat     59     16     75      0
+biovec-64              2      5    792    5    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      33     10     6    5 				   0    0    0    0    0 : cpustat   1411      7   1418      0
+biovec-16              9     18    216   18    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     128     16     8    7 				   0    0    0    0    0 : cpustat    605      8    613      0
+sock_inode_cache     200    200    392   10    1 : tunables   32   16    0 : slabdata     20     20      0 : globalstat     508    200    20    0 				   0    0    0    0    0 : cpustat   1592     60   1462      0
+skbuff_fclone_cache      1     10    384   10    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     239     20    13   12 				   0    0    0    0    0 : cpustat     88     25    112      0
+skbuff_head_cache     16     19    200   19    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     360     35     2    1 				   0    0    0    0    0 : cpustat   8941     24   8964      1
+file_lock_cache        0      0    120   32    1 : tunables   32   16    0 : slabdata      0      0      0 : globalstat     336     22     6    6 				   0    0    0    0    0 : cpustat  76472     21  76493      0
+shmem_inode_cache    627    693    448    9    1 : tunables   32   16    0 : slabdata     77     77      0 : globalstat    1351    693    77    0 				   0    0    0    0    0 : cpustat   4413    123   3899     17
+proc_inode_cache    6690   6690    376   10    1 : tunables   32   16    0 : slabdata    669    669      0 : globalstat    9779   6940   815   13 				   0    2    0    0    0 : cpustat  25667    935  19754    169
+sigqueue               9     23    168   23    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat     128     18     4    3 				   0    0    0    0    0 : cpustat    567      8    575      0
+radix_tree_node     3480   3480    312   12    1 : tunables   32   16    0 : slabdata    290    290      0 : globalstat    4150   3480   306    1 				   0    2    0    0    0 : cpustat   5325    346   2178     24
+bdev_cache            10     16    480    8    1 : tunables   32   16    0 : slabdata      2      2      0 : globalstat      24     16     2    0 				   0    0    0    0    0 : cpustat     12      4      6      0
+sysfs_dir_cache     6232   6254     72   53    1 : tunables   32   16    0 : slabdata    118    118      0 : globalstat    6355   6246   119    1 				   0    0    0    0    0 : cpustat   6024    478    269      1
+mnt_cache             26     26    152   26    1 : tunables   32   16    0 : slabdata      1      1      0 : globalstat      58     42     3    2 				   0    0    0    0    0 : cpustat     28      4      6      0
+filp                2360   2538    144   27    1 : tunables   32   16    0 : slabdata     94     94      0 : globalstat   35839   2554   130    2 				   0    1    0    0    0 : cpustat  80953   2285  78804   2092
+inode_cache         2482   2629    352   11    1 : tunables   32   16    0 : slabdata    239    239      0 : globalstat    3168   3080   280    1 				   0    1    0    0    0 : cpustat   2840    291    641     29
+dentry             11378  11466    152   26    1 : tunables   32   16    0 : slabdata    441    441      0 : globalstat   28041  11778   507    0 				   0    0    0    0    0 : cpustat  39898   1946  29440   1041
+names_cache           14     14   4096    1    1 : tunables   24   12    0 : slabdata     14     14      0 : globalstat      19     19    19    5 				   0    0    0    0    0 : cpustat 225657     19 225676      0
+buffer_head        13012  13860     88   44    1 : tunables   32   16    0 : slabdata    315    315      0 : globalstat   35981  13860   678    0 				   0    1    0    0    0 : cpustat  58274   2422  46266   1426
+vm_area_struct     13501  13510    112   35    1 : tunables   32   16    0 : slabdata    386    386      0 : globalstat   17860  13911   428    0 				   0    1    0    0    0 : cpustat  32366   1462  20100    257
+mm_struct             80     80    400   10    1 : tunables   32   16    0 : slabdata      8      8      0 : globalstat     190     90     9    1 				   0    0    0    0    0 : cpustat    308     21    251      0
+fs_cache              91    134     56   67    1 : tunables   32   16    0 : slabdata      2      2      0 : globalstat     251     94     2    0 				   0    0    0    0    0 : cpustat   1311     16   1250      0
+files_cache           92     95    200   19    1 : tunables   32   16    0 : slabdata      5      5      0 : globalstat     590     95     5    0 				   0    1    0    0    0 : cpustat   1287     41   1232     18
+signal_cache         136    136    512    8    1 : tunables   32   16    0 : slabdata     17     17      0 : globalstat     266    136    17    0 				   0    0    0    0    0 : cpustat   1366     31   1270      0
+sighand_cache        129    129   1320    3    1 : tunables   24   12    0 : slabdata     43     43      0 : globalstat     171    129    44    1 				   0    0    0    0    0 : cpustat   1338     59   1270      0
+task_struct          693    693   1216    3    1 : tunables   24   12    0 : slabdata    231    231      0 : globalstat    1251    693   257    7 				   0    8    0    0    0 : cpustat   2228    312   1820     32
+cred_jar             238    245    112   35    1 : tunables   32   16    0 : slabdata      7      7      0 : globalstat    3021    245     8    0 				   0    1    0    0    0 : cpustat  13064    195  12876    157
+anon_vma            1312   1356     32  113    1 : tunables   32   16    0 : slabdata     12     12      0 : globalstat    1867   1312    12    0 				   0    0    0    0    0 : cpustat   4336    127   3163     13
+pid                  702    742     72   53    1 : tunables   32   16    0 : slabdata     14     14      0 : globalstat    1323    707    14    0 				   0    0    0    0    0 : cpustat   2449     91   1833     19
+idr_layer_cache      185    198    176   22    1 : tunables   32   16    0 : slabdata      9      9      0 : globalstat     337    192     9    0 				   0    0    0    0    0 : cpustat   2481     32   2347      0
+size-4194304           0      0 4194304    1 1024 : tunables    1    1    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+size-2097152           0      0 2097152    1  512 : tunables    1    1    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+size-1048576           0      0 1048576    1  256 : tunables    1    1    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+size-524288            0      0 524288    1  128 : tunables    1    1    0 : slabdata      0      0      0 : globalstat       0      0     0    0 				   0    0    0    0    0 : cpustat      0      0      0      0
+size-262144            0      0 262144    1   64 : tunables    1    1    0 : slabdata      0      0      0 : globalstat       1      1     1    1 				   0    0    0    0    0 : cpustat      1      1      2      0
+size-131072            1      1 131072    1   32 : tunables    8    4    0 : slabdata      1      1      0 : globalstat       1      1     1    0 				   0    0    0    0    0 : cpustat      0      1      0      0
+size-65536             4      4  65536    1   16 : tunables    8    4    0 : slabdata      4      4      0 : globalstat       4      4     4    0 				   0    0    0    0    0 : cpustat      2      4      2      0
+size-32768             2      2  32768    1    8 : tunables    8    4    0 : slabdata      2      2      0 : globalstat       6      2     4    2 				   0    0    0    0    0 : cpustat      5      6      9      0
+size-16384             6      6  16384    1    4 : tunables    8    4    0 : slabdata      6      6      0 : globalstat      23     14    21   15 				   0    0    0    0    0 : cpustat    265     22    281      0
+size-8192             19     19   8192    1    2 : tunables    8    4    0 : slabdata     19     19      0 : globalstat      25     24    25    6 				   0    0    0    0    0 : cpustat    439     25    445      0
+size-4096             62     62   4096    1    1 : tunables   24   12    0 : slabdata     62     62      0 : globalstat     151     69   119   57 				   0    0    0    0    0 : cpustat  54761    150  54850      0
+size-2048            172    177   2176    3    2 : tunables   24   12    0 : slabdata     59     59      0 : globalstat     419    183    62    3 				   0    0    0    0    0 : cpustat    625     94    550      0
+size-1024            203    203   1152    7    2 : tunables   24   12    0 : slabdata     29     29      0 : globalstat     578    203    35    6 				   0    1    0    0    0 : cpustat   1592     81   1473      2
+size-512             371    378    640    6    1 : tunables   32   16    0 : slabdata     63     63      0 : globalstat     693    384    64    1 				   0    0    0    0    0 : cpustat   6384    105   6122      0
+size-256             560    560    384   10    1 : tunables   32   16    0 : slabdata     56     56      0 : globalstat     812    560    58    2 				   0    0    0    0    0 : cpustat   2025    101   1566      1
+size-192             420    420    320   12    1 : tunables   32   16    0 : slabdata     35     35      0 : globalstat     512    420    35    0 				   0    0    0    0    0 : cpustat    559     49    195      0
+size-128            3265   3450    256   15    1 : tunables   32   16    0 : slabdata    230    230      0 : globalstat    6566   3450   236    0 				   0    1    0    0    0 : cpustat  54129    430  51103    192
+size-64             3178   3340    192   20    1 : tunables   32   16    0 : slabdata    167    167      0 : globalstat    6792   3336   167    0 				   0    1    0    0    0 : cpustat  65621    571  62800    225
+size-32            11322  11370    128   30    1 : tunables   32   16    0 : slabdata    379    379      0 : globalstat   13731  12106   410    0 				   0    0    0    0    0 : cpustat 136166    936 125615    167
+kmem_cache           120    120    192   20    1 : tunables   32   16    0 : slabdata      6      6      0 : globalstat     120    120     6    0 				   0    0    0    0    0 : cpustat     90     30      0      0
+
+------ ZONEINFO (/proc/zoneinfo) ------
+Node 0, zone   Normal
+  pages free     1189
+        min      711
+        low      888
+        high     1066
+        scanned  0
+        spanned  127488
+        present  126492
+    nr_free_pages 1189
+    nr_inactive_anon 6367
+    nr_active_anon 41718
+    nr_inactive_file 31925
+    nr_active_file 13753
+    nr_unevictable 37
+    nr_mlock     0
+    nr_anon_pages 47875
+    nr_mapped    21692
+    nr_file_pages 45926
+    nr_dirty     67
+    nr_writeback 0
+    nr_slab_reclaimable 2142
+    nr_slab_unreclaimable 2515
+    nr_page_table_pages 5283
+    nr_kernel_stack 688
+    nr_unstable  0
+    nr_bounce    0
+    nr_vmscan_write 0
+    nr_writeback_temp 0
+    nr_isolated_anon 0
+    nr_isolated_file 0
+    nr_shmem     211
+        protection: (0, 0)
+  pagesets
+    cpu: 0
+              count: 163
+              high:  186
+              batch: 31
+  all_unreclaimable: 0
+  prev_priority:     12
+  start_pfn:         527360
+  inactive_ratio:    1
+
+------ BUDDYINFO (/proc/buddyinfo) ------
+Node 0, zone   Normal     65     20     35     22     10      5      3      2      0      0      0 
+
+------ SYSTEM LOG (logcat -v threadtime -d *:v) ------
+------ VM TRACES JUST NOW (/data/anr/traces.txt.bugreport: 2010-10-13 08:40:04) ------
+
+
+----- pid 1274 at 2010-10-13 08:40:04 -----
+Cmd line: system_server
+
+DALVIK THREADS:
+"main" prio=5 tid=1 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x40020998 self=0xce38
+  | sysTid=1274 nice=0 sched=0/0 cgrp=default handle=-1345017744
+  | schedstat=( 2180145260 6354126016 4906 )
+  at com.android.server.SystemServer.init1(Native Method)
+  at com.android.server.SystemServer.main(SystemServer.java:645)
+  at java.lang.reflect.Method.invokeNative(Native Method)
+  at java.lang.reflect.Method.invoke(Method.java:521)
+  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:868)
+  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:626)
+  at dalvik.system.NativeStart.main(Native Method)
+
+"Binder Thread #14" prio=5 tid=60 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461a81e0 self=0x444f20
+  | sysTid=2288 nice=0 sched=0/0 cgrp=default handle=4262064
+  | schedstat=( 123962408 3049591052 593 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #13" prio=5 tid=59 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x463e9780 self=0x4428c8
+  | sysTid=2280 nice=0 sched=0/0 cgrp=default handle=2495448
+  | schedstat=( 281341537 3178283686 726 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #12" prio=5 tid=39 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4644ee00 self=0x28aeb0
+  | sysTid=2238 nice=0 sched=0/0 cgrp=default handle=3083352
+  | schedstat=( 258453365 3641784655 831 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #11" prio=5 tid=58 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x463c8b68 self=0x3ea808
+  | sysTid=1946 nice=0 sched=0/0 cgrp=default handle=4108776
+  | schedstat=( 1422546407 5823760978 3490 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"NetworkLocationProvider" prio=5 tid=57 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46244b68 self=0x4650f0
+  | sysTid=1516 nice=10 sched=0/0 cgrp=bg_non_interactive handle=4608560
+  | schedstat=( 44006378 31866180395 769 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4630bb90> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.google.android.location.NetworkLocationProvider.run(NetworkLocationProvider.java:1099)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"Thread-62" prio=5 tid=56 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46234610 self=0x4170a8
+  | sysTid=1514 nice=0 sched=0/0 cgrp=default handle=4289000
+  | schedstat=( 8880627 4500854497 498 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-61" prio=5 tid=55 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461b0130 self=0x414c80
+  | sysTid=1513 nice=0 sched=0/0 cgrp=default handle=4279744
+  | schedstat=( 10040274 4663360612 495 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-60" prio=5 tid=54 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461afe30 self=0x414290
+  | sysTid=1512 nice=0 sched=0/0 cgrp=default handle=4273416
+  | schedstat=( 8178712 4667327895 494 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461bc830> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.async.AsyncHttpRequestFactory.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-59" prio=5 tid=53 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x462471f0 self=0x4133c8
+  | sysTid=1511 nice=0 sched=0/0 cgrp=default handle=4274448
+  | schedstat=( 9399405 4492736837 494 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4622dce8> (a java.lang.Object)
+  at java.lang.Object.wait(Object.java:288)
+  at com.google.common.task.TaskRunner.waitForSomethingToDo((null):-1)
+  at com.google.common.task.TaskRunner.run((null):-1)
+  at com.google.common.lang.ThreadFactory$ThreadImpl.run((null):-1)
+
+"Thread-58" prio=5 tid=52 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45fe91c8 self=0x2eaf18
+  | sysTid=1478 nice=0 sched=0/0 cgrp=default handle=2365144
+  | schedstat=( 10681147 4518859887 496 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x46050088> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.google.android.gsf.Gservices$1.run(Gservices.java:78)
+
+"GpsLocationProvider" prio=5 tid=51 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4618e6b8 self=0x300fe0
+  | sysTid=1470 nice=10 sched=0/0 cgrp=bg_non_interactive handle=3126032
+  | schedstat=( 21697986 27530456556 525 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x46207330> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:326)
+  at android.os.MessageQueue.next(MessageQueue.java:142)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.internal.location.GpsLocationProvider$GpsLocationProviderThread.run(GpsLocationProvider.java:1687)
+
+"Binder Thread #10" prio=5 tid=50 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4623c1c8 self=0x5094d0
+  | sysTid=1427 nice=0 sched=0/0 cgrp=default handle=5280824
+  | schedstat=( 1731018121 6233581554 4195 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #9" prio=5 tid=49 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4623c108 self=0x508720
+  | sysTid=1426 nice=0 sched=0/0 cgrp=default handle=5273784
+  | schedstat=( 1998443589 6294097933 4477 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #8" prio=5 tid=48 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4623b838 self=0x506ba0
+  | sysTid=1425 nice=0 sched=0/0 cgrp=default handle=5270192
+  | schedstat=( 1860748275 6433624253 4663 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #7" prio=5 tid=47 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4623b6a8 self=0x505d20
+  | sysTid=1407 nice=0 sched=0/0 cgrp=default handle=5266296
+  | schedstat=( 1826293976 6564025885 5085 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #6" prio=5 tid=46 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4623b0c0 self=0x504a58
+  | sysTid=1405 nice=0 sched=0/0 cgrp=default handle=5261400
+  | schedstat=( 1864410412 6857238787 4986 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #5" prio=5 tid=45 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46237f20 self=0x502c70
+  | sysTid=1400 nice=0 sched=0/0 cgrp=default handle=5252504
+  | schedstat=( 2217193578 6528350841 4807 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #4" prio=5 tid=44 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x462344a0 self=0x4fe118
+  | sysTid=1393 nice=0 sched=0/0 cgrp=default handle=5234816
+  | schedstat=( 1945739737 6577117902 4994 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #3" prio=5 tid=43 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x462343e0 self=0x4fd420
+  | sysTid=1389 nice=0 sched=0/0 cgrp=default handle=5212344
+  | schedstat=( 1725250260 6623168922 4562 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"ThrottleService" prio=5 tid=42 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46221f28 self=0x4f3e80
+  | sysTid=1359 nice=0 sched=0/0 cgrp=default handle=5188840
+  | schedstat=( 859191888 5277343754 1965 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x46223530> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"LocationManagerService" prio=5 tid=41 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x462207c0 self=0x4f3538
+  | sysTid=1357 nice=10 sched=0/0 cgrp=bg_non_interactive handle=5188928
+  | schedstat=( 26885998 27761596662 565 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x462220f8> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.LocationManagerService.run(LocationManagerService.java:571)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"watchdog" prio=5 tid=40 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e4ca90 self=0x307890
+  | sysTid=1354 nice=0 sched=0/0 cgrp=default handle=3187376
+  | schedstat=( 14068600 4416107171 511 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45e4ca90> (a com.android.server.Watchdog)
+  at java.lang.Object.wait(Object.java:326)
+  at com.android.server.Watchdog.run(Watchdog.java:835)
+
+"RefQueueWorker@org.apache.http.impl.conn.tsccm.ConnPoolByRoute@461152e8" daemon prio=5 tid=38 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46094da0 self=0x2fd380
+  | sysTid=1351 nice=0 sched=0/0 cgrp=default handle=2551912
+  | schedstat=( 11444091 4396850586 493 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45f58558> (a java.lang.ref.ReferenceQueue)
+  at java.lang.Object.wait(Object.java:326)
+  at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:107)
+  at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:80)
+  at org.apache.http.impl.conn.tsccm.RefQueueWorker.run(RefQueueWorker.java:102)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"backup" prio=5 tid=37 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46147590 self=0x339d78
+  | sysTid=1320 nice=10 sched=0/0 cgrp=bg_non_interactive handle=44472
+  | schedstat=( 10375972 24321441649 491 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45f4ac78> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"SoundPool" prio=5 tid=36 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461e90f0 self=0x28aaf0
+  | sysTid=1317 nice=0 sched=0/0 cgrp=default handle=2803472
+  | schedstat=( 8636467 4388275145 491 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"SoundPoolThread" prio=5 tid=35 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461e9770 self=0x2cc3a0
+  | sysTid=1318 nice=0 sched=0/0 cgrp=default handle=3052424
+  | schedstat=( 12237560 4398925776 518 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"SuplReceiver" prio=5 tid=34 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461ddc40 self=0x2e3930
+  | sysTid=1315 nice=0 sched=0/0 cgrp=default handle=2953304
+  | schedstat=( 155883796 4558349594 663 )
+  at java.lang.VMThread.sleep(Native Method)
+  at java.lang.Thread.sleep(Thread.java:1306)
+  at java.lang.Thread.sleep(Thread.java:1286)
+  at com.motorola.android.locationproxy.Supl$SuplReceiver.run(Supl.java:349)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"AudioService" prio=5 tid=33 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461e3758 self=0x2e40b8
+  | sysTid=1316 nice=0 sched=0/0 cgrp=default handle=2806464
+  | schedstat=( 11901863 4378021236 513 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461e3920> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.media.AudioService$AudioSystemThread.run(AudioService.java:1573)
+
+"LocationProxyService" prio=5 tid=31 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461c32b0 self=0x2d1340
+  | sysTid=1314 nice=10 sched=0/0 cgrp=bg_non_interactive handle=2954368
+  | schedstat=( 17730711 24413909907 503 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461cd0f0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.motorola.server.LocationProxyService.run(LocationProxyService.java:343)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"MotLocationManagerService" prio=5 tid=32 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461bfc88 self=0x2cbad0
+  | sysTid=1313 nice=10 sched=0/0 cgrp=bg_non_interactive handle=2931728
+  | schedstat=( 19683833 26652740486 509 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461c3470> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.motorola.gps.MotLocationManagerService.run(MotLocationManagerService.java:613)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"com.android.server.NativeDaemonConnector" prio=5 tid=30 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461b6ad8 self=0x2c60a8
+  | sysTid=1311 nice=0 sched=0/0 cgrp=default handle=2902688
+  | schedstat=( 106506335 4673156744 727 )
+  at android.net.LocalSocketImpl.readba_native(Native Method)
+  at android.net.LocalSocketImpl.access$400(LocalSocketImpl.java:29)
+  at android.net.LocalSocketImpl$SocketInputStream.read(LocalSocketImpl.java:92)
+  at com.android.server.NativeDaemonConnector.listenToSocket(NativeDaemonConnector.java:109)
+  at com.android.server.NativeDaemonConnector.run(NativeDaemonConnector.java:83)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"MountService" prio=5 tid=29 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461b6510 self=0x29fcc8
+  | sysTid=1310 nice=0 sched=0/0 cgrp=default handle=2922808
+  | schedstat=( 45562753 4533264162 584 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461b68c8> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"Tethering" prio=5 tid=28 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461ad978 self=0x2c2970
+  | sysTid=1309 nice=0 sched=0/0 cgrp=default handle=2904160
+  | schedstat=( 10345455 4362731929 499 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461adb48> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"Cell Info Handler Thread" prio=5 tid=27 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4619e678 self=0x29a4b8
+  | sysTid=1308 nice=0 sched=0/0 cgrp=default handle=2729464
+  | schedstat=( 8850086 4348449711 496 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4619e988> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"MotWifiScan" prio=5 tid=26 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4619d3c8 self=0x298dc0
+  | sysTid=1307 nice=0 sched=0/0 cgrp=default handle=2421832
+  | schedstat=( 34057606 4439971939 578 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4619d660> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"WifiService" prio=5 tid=25 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4619b208 self=0x2518a0
+  | sysTid=1306 nice=0 sched=0/0 cgrp=default handle=2431456
+  | schedstat=( 15869156 4355438230 513 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4619b4a0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"ConnectivityThread" prio=5 tid=24 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46177ef0 self=0x37e868
+  | sysTid=1304 nice=0 sched=0/0 cgrp=default handle=3664296
+  | schedstat=( 96038828 4487853995 732 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x4614ad88> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.ConnectivityServiceExt$ConnectivityThread.run(ConnectivityServiceExt.java:165)
+
+"com.android.server.NativeDaemonConnector" prio=5 tid=23 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x461582b8 self=0x287290
+  | sysTid=1303 nice=0 sched=0/0 cgrp=default handle=2651088
+  | schedstat=( 325103736 4618835471 891 )
+  at android.net.LocalSocketImpl.readba_native(Native Method)
+  at android.net.LocalSocketImpl.access$400(LocalSocketImpl.java:29)
+  at android.net.LocalSocketImpl$SocketInputStream.read(LocalSocketImpl.java:92)
+  at com.android.server.NativeDaemonConnector.listenToSocket(NativeDaemonConnector.java:109)
+  at com.android.server.NativeDaemonConnector.run(NativeDaemonConnector.java:83)
+  at java.lang.Thread.run(Thread.java:1096)
+
+"InputDispatcher" prio=5 tid=22 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46157c00 self=0x3ac1d0
+  | sysTid=1302 nice=-8 sched=0/0 cgrp=default handle=2550280
+  | schedstat=( 91278090 4379699716 561 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x46103b28> (a com.android.server.KeyInputQueue$QueuedEvent)
+  at java.lang.Object.wait(Object.java:326)
+  at com.android.server.KeyInputQueue.getEvent(KeyInputQueue.java:1245)
+  at com.android.server.WindowManagerService$InputDispatcherThread.process(WindowManagerService.java:6925)
+  at com.android.server.WindowManagerService$InputDispatcherThread.run(WindowManagerService.java:6889)
+
+"WindowManagerPolicy" prio=5 tid=21 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46157dd0 self=0x396378
+  | sysTid=1301 nice=-2 sched=0/0 cgrp=default handle=3761336
+  | schedstat=( 5164825426 9689971932 7348 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x46161718> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.WindowManagerService$PolicyThread.run(WindowManagerService.java:637)
+
+"InputDeviceReader" prio=5 tid=20 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46175e58 self=0x395910
+  | sysTid=1300 nice=-8 sched=0/0 cgrp=default handle=3758672
+  | schedstat=( 165863044 4348663345 1007 )
+  at com.android.server.KeyInputQueue.readEvent(Native Method)
+  at com.android.server.KeyInputQueue.access$000(KeyInputQueue.java:51)
+  at com.android.server.KeyInputQueue$1.run(KeyInputQueue.java:578)
+
+"WindowManager" prio=5 tid=19 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4616b860 self=0x380620
+  | sysTid=1299 nice=-4 sched=0/0 cgrp=default handle=3671904
+  | schedstat=( 111663825 4384826658 605 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x460b8eb0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.WindowManagerService$WMThread.run(WindowManagerService.java:601)
+
+"AlarmManager" prio=5 tid=18 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4615ef88 self=0x37eda0
+  | sysTid=1298 nice=0 sched=0/0 cgrp=default handle=3612096
+  | schedstat=( 1634674052 13539032011 3918 )
+  at com.android.server.AlarmManagerService.waitForAlarm(Native Method)
+  at com.android.server.AlarmManagerService.access$100(AlarmManagerService.java:54)
+  at com.android.server.AlarmManagerService$AlarmThread.run(AlarmManagerService.java:643)
+
+"PowerManagerService" prio=5 tid=17 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x460f1388 self=0x3489d8
+  | sysTid=1297 nice=0 sched=0/0 cgrp=default handle=3443480
+  | schedstat=( 269561792 4377502406 1586 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x460e4118> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"UEventObserver" prio=5 tid=16 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45f79c50 self=0x3470a8
+  | sysTid=1296 nice=0 sched=0/0 cgrp=default handle=3437032
+  | schedstat=( 649261487 5841766341 1950 )
+  at android.os.UEventObserver.next_event(Native Method)
+  at android.os.UEventObserver.access$100(UEventObserver.java:39)
+  at android.os.UEventObserver$UEventThread.run(UEventObserver.java:102)
+
+"SyncHandlerThread" prio=5 tid=15 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x460601a8 self=0x282580
+  | sysTid=1295 nice=10 sched=0/0 cgrp=bg_non_interactive handle=2811216
+  | schedstat=( 89202871 30142242431 815 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45f8f318> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"AccountManagerService" prio=5 tid=14 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x46167888 self=0x274488
+  | sysTid=1293 nice=0 sched=0/0 cgrp=default handle=2829032
+  | schedstat=( 10986338 3846069323 501 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x461026c0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"FileObserver" prio=5 tid=13 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45f03ae0 self=0x296bb0
+  | sysTid=1292 nice=0 sched=0/0 cgrp=default handle=2800160
+  | schedstat=( 20019530 3851623532 501 )
+  at android.os.FileObserver$ObserverThread.observe(Native Method)
+  at android.os.FileObserver$ObserverThread.run(FileObserver.java:88)
+
+"PackageManager" prio=5 tid=12 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45ed56b8 self=0x2946e0
+  | sysTid=1291 nice=10 sched=0/0 cgrp=bg_non_interactive handle=1148912
+  | schedstat=( 858276362 35973876951 2729 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45ed9160> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"ProcessStats" prio=5 tid=11 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45ed0e50 self=0x28ba70
+  | sysTid=1290 nice=0 sched=0/0 cgrp=default handle=1301488
+  | schedstat=( 6899017355 13137420645 3846 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45ed0e50> (a com.android.server.am.ActivityManagerService$3)
+  at java.lang.Object.wait(Object.java:326)
+  at com.android.server.am.ActivityManagerService$3.run(ActivityManagerService.java:1677)
+
+"NoteBatteryStatus" prio=5 tid=10 WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e558c0 self=0x23aff8
+  | sysTid=1289 nice=0 sched=0/0 cgrp=default handle=2329680
+  | schedstat=( 13275151 3826385493 524 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45e55bb0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:288)
+  at android.os.MessageQueue.next(MessageQueue.java:146)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.os.HandlerThread.run(HandlerThread.java:60)
+
+"ActivityManager" prio=5 tid=9 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e50228 self=0x2370d8
+  | sysTid=1288 nice=-2 sched=0/0 cgrp=default handle=2322968
+  | schedstat=( 3490173339 9871490542 7888 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45e503f0> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:326)
+  at android.os.MessageQueue.next(MessageQueue.java:142)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.am.ActivityManagerService$AThread.run(ActivityManagerService.java:1570)
+
+"android.server.ServerThread" prio=5 tid=8 TIMED_WAIT
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e44048 self=0x231750
+  | sysTid=1283 nice=-2 sched=0/0 cgrp=default handle=2300048
+  | schedstat=( 13866394070 20349914550 25887 )
+  at java.lang.Object.wait(Native Method)
+  - waiting on <0x45e44398> (a android.os.MessageQueue)
+  at java.lang.Object.wait(Object.java:326)
+  at android.os.MessageQueue.next(MessageQueue.java:142)
+  at android.os.Looper.loop(Looper.java:123)
+  at com.android.server.ServerThread.run(SystemServer.java:576)
+
+"Binder Thread #2" prio=5 tid=7 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e42de8 self=0x11f3b8
+  | sysTid=1280 nice=0 sched=0/0 cgrp=default handle=1190800
+  | schedstat=( 2042633087 5893920891 5097 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #1" prio=5 tid=6 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x45e42d28 self=0x11f228
+  | sysTid=1279 nice=0 sched=0/0 cgrp=default handle=1171000
+  | schedstat=( 2045745831 6243286125 4915 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Compiler" daemon prio=5 tid=5 VMWAIT
+  | group="system" sCount=1 dsCount=0 s=N obj=0x45e40348 self=0x11dbd0
+  | sysTid=1278 nice=0 sched=0/0 cgrp=default handle=1249192
+  | schedstat=( 3673065133 12246765178 20297 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"JDWP" daemon prio=5 tid=4 VMWAIT
+  | group="system" sCount=1 dsCount=0 s=N obj=0x45e402a0 self=0x11e728
+  | sysTid=1277 nice=0 sched=0/0 cgrp=default handle=1201000
+  | schedstat=( 15899651 3751434329 502 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Signal Catcher" daemon prio=5 tid=3 RUNNABLE
+  | group="system" sCount=0 dsCount=0 s=N obj=0x45e401e8 self=0x125178
+  | sysTid=1276 nice=0 sched=0/0 cgrp=default handle=1249128
+  | schedstat=( 34454352 3733673089 503 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"HeapWorker" daemon prio=5 tid=2 VMWAIT
+  | group="system" sCount=1 dsCount=0 s=N obj=0x442521e8 self=0x11e430
+  | sysTid=1275 nice=0 sched=0/0 cgrp=default handle=1150544
+  | schedstat=( 1866973881 5042907709 3101 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+----- end 1274 -----
+
+*** NO ANR VM TRACES FILE (/data/anr/traces.txt): No such file or directory
+
+------ EVENT LOG (logcat -b events -v threadtime -d *:v) ------
+10-12 18:14:00.000  EVENT LOG 1
+10-12 1814:43.265  EVENT LOG 2
+10-12 18:14:55.000 EVENT LOG 3
+------ RADIO LOG
+10-12 18:14:30.000 RADIO LOG 1
+10-12 18:14:43.000 RADIO LOG 2
+10-12 18:14:50.000 RADIO LOG 3
+10-12 18:14:59.000 RADIO LOG 4
+
+------ NETWORK INTERFACES (netcfg) ------
+*** exec(netcfg): Permission denied
+*** netcfg: Exit code 255
+[netcfg: 0.1s elapsed]
+
+------ NETWORK ROUTES (/proc/net/route) ------
+Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT                                                       
+ppp0	40B1AE42	00000000	0005	0	0	0	FFFFFFFF	0	0	0                                                                               
+ppp0	00000000	40B1AE42	0003	0	0	0	00000000	0	0	0                                                                               
+
+------ ARP CACHE (/proc/net/arp) ------
+IP address       HW type     Flags       HW address            Mask     Device
+
+------ SYSTEM PROPERTIES ------
+[adb.connected]: [1]
+[dalvik.vm.dexopt-flags]: [m=y]
+[dalvik.vm.heapsize]: [30m]
+[dalvik.vm.stack-trace-file]: [/data/anr/traces.txt]
+[debug.mot.extamlog]: [1]
+[debug.mot.extwmlog]: [1]
+[debug.wakelocks]: [1]
+[dev.bootcomplete]: [1]
+[gsm.current.phone-type]: [2]
+[gsm.network.type]: [CDMA - EvDo rev. A]
+[gsm.nitz.time]: [1286925306046]
+[gsm.operator.alpha]: [Verizon Wireless]
+[gsm.operator.iso-country]: [us]
+[gsm.operator.isroaming]: [false]
+[gsm.operator.numeric]: [00000]
+[gsm.sim.operator.alpha]: [Verizon]
+[gsm.sim.operator.iso-country]: [us]
+[gsm.sim.operator.numeric]: [310004]
+[gsm.sim.state]: [ABSENT]
+[gsm.stk.event.useractivity]: [0]
+[gsm.version.baseband]: [N_01.42.00R]
+[gsm.version.ril-impl]: [vwm736_DPRO_COMMON_MOTO_RIL_01.51.00R_ver3RILH]
+[hw.keyboards.0.devname]: [sholes-keypad]
+[hw.keyboards.65537.devname]: [sholes-keypad]
+[hw.keyboards.65538.devname]: [qtouch-touchscreen]
+[hw.keyboards.65539.devname]: [cpcap-key]
+[init.svc.adbd]: [running]
+[init.svc.akmd2]: [running]
+[init.svc.aplogd]: [stopped]
+[init.svc.atvc]: [stopped]
+[init.svc.baseimage]: [stopped]
+[init.svc.battd]: [running]
+[init.svc.bootanim]: [stopped]
+[init.svc.dbus]: [running]
+[init.svc.debuggerd]: [running]
+[init.svc.ecckeydaemon]: [running]
+[init.svc.ftmipcd]: [running]
+[init.svc.installd]: [running]
+[init.svc.keystore]: [running]
+[init.svc.loadpreinstalls]: [stopped]
+[init.svc.mdm_panicd]: [running]
+[init.svc.media]: [running]
+[init.svc.modemlog]: [stopped]
+[init.svc.netd]: [running]
+[init.svc.pm_init]: [stopped]
+[init.svc.pvrsrv]: [stopped]
+[init.svc.ril-daemon]: [running]
+[init.svc.savebpver]: [stopped]
+[init.svc.secclkd]: [running]
+[init.svc.servicemanager]: [running]
+[init.svc.setup_bt]: [stopped]
+[init.svc.smcdaemon]: [stopped]
+[init.svc.start_servers]: [stopped]
+[init.svc.tcmd]: [running]
+[init.svc.usbd]: [running]
+[init.svc.vold]: [running]
+[init.svc.zygote]: [running]
+[keyguard.no_require_sim]: [true]
+[media.stagefright.enable-http]: [false]
+[media.stagefright.enable-meta]: [false]
+[media.stagefright.enable-player]: [false]
+[media.stagefright.enable-scan]: [false]
+[misc.debug]: [1]
+[mot.proximity.delay]: [450]
+[mot.proximity.distance]: [60]
+[net.bt.name]: [Android]
+[net.change]: [net.dnschange]
+[net.dns1]: [66.174.95.44]
+[net.dns2]: [69.78.96.14]
+[net.dnschange]: [3]
+[net.gprs.http-proxy]: []
+[net.hostname]: [android_773eec60c9240f75]
+[net.ppp0.dns1]: [66.174.95.44]
+[net.ppp0.dns2]: [69.78.96.14]
+[net.ppp0.local-ip]: [97.202.218.25]
+[net.ppp0.remote-ip]: [66.174.177.64]
+[net.tcp.buffersize.default]: [65536,131072,262144,65536,131072,262144]
+[net.tcp.buffersize.edge]: [4093,26280,35040,4096,16384,35040]
+[net.tcp.buffersize.gprs]: [4092,8760,11680,4096,8760,11680]
+[net.tcp.buffersize.umts]: [4094,87380,110208,4096,16384,110208]
+[net.tcp.buffersize.wifi]: [65536,131072,262144,65536,131072,262144]
+[persist.mot.a2dp.direct]: [1]
+[persist.mot.proximity.touch]: [1]
+[persist.mot.usb.mediasync]: [1]
+[persist.radio.ap.phonetype]: [2]
+[persist.radio.cdma.min]: [4082135841]
+[persist.radio.vzw.cdma.mdn]: [4082014370]
+[persist.ril.ecclist]: [911,*911,#911]
+[persist.ril.features]: [0x0E]
+[persist.ril.modem.mode]: [1]
+[persist.ril.modem.ttydevice]: [/dev/ttyUSB4]
+[persist.ril.mux.noofchannels]: [8]
+[persist.ril.mux.retries]: [500]
+[persist.ril.mux.sleep]: [2]
+[persist.ril.mux.ttydevice]: [/dev/ttyS0]
+[persist.service.adb.enable]: [1]
+[persist.sys.country]: [US]
+[persist.sys.language]: [en]
+[persist.sys.localevar]: []
+[persist.sys.timezone]: [America/Chicago]
+[preinstall.done]: [1]
+[radio.cdma.nbpcdallowed]: [1]
+[rild.libargs]: [-d /dev/ttyS0]
+[rild.libpath]: [/system/lib/libmoto_ril.so]
+[ro.BACKUP_APP_ADJ]: [2]
+[ro.BACKUP_APP_MEM]: [9216]
+[ro.CONTENT_PROVIDER_ADJ]: [14]
+[ro.CONTENT_PROVIDER_MEM]: [12288]
+[ro.EMPTY_APP_ADJ]: [15]
+[ro.EMPTY_APP_MEM]: [12288]
+[ro.FOREGROUND_APP_ADJ]: [0]
+[ro.FOREGROUND_APP_MEM]: [3072]
+[ro.HIDDEN_APP_MEM]: [10752]
+[ro.HIDDEN_APP_MIN_ADJ]: [7]
+[ro.HOME_APP_ADJ]: [4]
+[ro.HOME_APP_MEM]: [9216]
+[ro.HorizontalBUA]: [true]
+[ro.HorizontalVVM]: [true]
+[ro.SECONDARY_SERVER_ADJ]: [2]
+[ro.SECONDARY_SERVER_MEM]: [9216]
+[ro.VISIBLE_APP_ADJ]: [1]
+[ro.VISIBLE_APP_MEM]: [4608]
+[ro.allow.mock.location]: [1]
+[ro.baseband]: [unknown]
+[ro.board.platform]: [omap3]
+[ro.bootloader]: [D012]
+[ro.bootmode]: [normal]
+[ro.build.date.utc]: [1286766986]
+[ro.build.date]: [Sun Oct 10 22:16:26 CDT 2010]
+[ro.build.description]: [cdma_droid2we-eng 2.2 S273 2.4.23 debug,ota-rel-keys,release-keys]
+[ro.build.display.id]: [VZW]
+[ro.build.host]: [il93lnxdroid09]
+[ro.build.id]: [S273]
+[ro.build.product]: [droid2we_vzw]
+[ro.build.tags]: [debug,ota-rel-keys,release-keys]
+[ro.build.type]: [eng]
+[ro.build.user]: [vwm736]
+[ro.build.version.codename]: [REL]
+[ro.build.version.full]: [Blur_Version.2.4.23.A956.Verizon.en.US]
+[ro.build.version.incremental]: [2.4.23]
+[ro.build.version.release]: [2.2]
+[ro.build.version.sdk]: [8]
+[ro.carrier]: [unknown]
+[ro.cdma.data_retry_config]: [default_randomization=2000,0,0,120000,180000,540000,960000]
+[ro.cdma.home.operator.alpha]: [Verizon]
+[ro.cdma.home.operator.isnan]: [1]
+[ro.cdma.home.operator.numeric]: [310004]
+[ro.cdma.homesystem]: [64,65,76,77,78,79,80,81,82,83]
+[ro.cdma.nbpcd]: [1]
+[ro.cdma.otaspnumschema]: [SELC,1,80,99]
+[ro.com.android.dataroaming]: [true]
+[ro.com.google.clientid]: [android-motorola]
+[ro.com.google.clientidbase.am]: [android-verizon]
+[ro.com.google.clientidbase]: [android-verizon]
+[ro.com.google.gmsversion]: [2.2_r6]
+[ro.config.alarm_alert]: [Alarm_Classic.ogg]
+[ro.config.notification_sound]: [OnTheHunt.ogg]
+[ro.config.ringtone]: [DroidTestLab.ogg]
+[ro.config.vc_call_vol_steps]: [7]
+[ro.debuggable]: [1]
+[ro.default_usb_mode]: [2]
+[ro.factorytest]: [0]
+[ro.ftmipcd.ipcdevice]: [/dev/ttyUSB0]
+[ro.hardware]: [mapphone_cdma]
+[ro.kernel.android.checkjni]: [1]
+[ro.kernel.android.ril]: [yes]
+[ro.media.capture.classification]: [classF]
+[ro.media.capture.fast.fps]: [4]
+[ro.media.capture.flashMinV]: [3630000]
+[ro.media.capture.flash]: [led]
+[ro.media.capture.maxres]: [5m]
+[ro.media.capture.slow.fps]: [60]
+[ro.media.capture.useDFR]: [1]
+[ro.media.enc.aud.bps]: [13300]
+[ro.media.enc.aud.ch]: [1]
+[ro.media.enc.aud.codec]: [qcelp]
+[ro.media.enc.aud.fileformat]: [qcp]
+[ro.media.enc.aud.hz]: [8000]
+[ro.mediasync.enable_sync_ui]: [1]
+[ro.modem_available]: [0]
+[ro.mot.FTR.33857]: [true]
+[ro.mot.dpmext]: [true]
+[ro.mot.eri]: [1]
+[ro.mot.fid.33531.keylock_ecm]: [true]
+[ro.mot.hw.HAC]: [1]
+[ro.mot.hw.uaprof]: []
+[ro.mot.mynet]: [true]
+[ro.mot.phonemode.vzwglobalphone]: [1]
+[ro.mot.ril.danlist]: [611,*611,#611]
+[ro.mot.setuptype]: [2]
+[ro.ngp_available]: [1]
+[ro.opengles.version]: [131072]
+[ro.product.board]: [droid2we]
+[ro.product.brand]: [verizon]
+[ro.product.cpu.abi2]: [armeabi]
+[ro.product.cpu.abi]: [armeabi-v7a]
+[ro.product.device]: [cdma_droid2we]
+[ro.product.locale.language]: [en]
+[ro.product.locale.region]: [US]
+[ro.product.manufacturer]: [motorola]
+[ro.product.model.internal]: [A956]
+[ro.product.model]: [DROID2 GLOBAL]
+[ro.product.name]: [droid2we_vzw]
+[ro.revision]: [0]
+[ro.ril.barcode]: []
+[ro.ril.ecclist]: [911,#911,*911,112,000,100,999,080,119,110,117,191,111,190,101,08,118,]
+[ro.runtime.firstboot]: [1286925311457]
+[ro.secure]: [0]
+[ro.serialno]: [015A5F5D0202702A]
+[ro.service.start.smc]: [1]
+[ro.setupwizard.enable_bypass]: [1]
+[ro.setupwizard.mode]: [OPTIONAL]
+[ro.sf.lcd_density]: [240]
+[ro.sys.atvc_allow_all_adb]: [1]
+[ro.sys.atvc_allow_all_core]: [1]
+[ro.sys.atvc_allow_ap_mot_log]: [1]
+[ro.sys.atvc_allow_bp_log]: [1]
+[ro.sys.atvc_allow_efem]: [1]
+[ro.sys.atvc_allow_gki_log]: [1]
+[ro.sys.atvc_allow_netmon_ih]: [1]
+[ro.sys.atvc_allow_netmon_usb]: [1]
+[ro.sys.atvc_allow_res_core]: [1]
+[ro.sys.atvc_allow_res_panic]: [1]
+[ro.telephony.call_ring.delay]: [3000]
+[ro.telephony.call_ring.multiple]: [false]
+[ro.telephony.default_network]: [4]
+[ro.telephony.gsm-routes-us-smsc]: [1]
+[ro.url.legal.android_privacy]: [http://www.google.com/intl/%s/mobile/android/basic/privacy.html]
+[ro.url.legal]: [http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html]
+[ro.url.safetylegal]: [http://www.motorola.com/staticfiles/Support/legal]
+[ro.usb_mode]: [normal]
+[ro.wifi.channels]: []
+[sys.mot.ui.launched]: [true]
+[sys.mot_settings_secure_version]: [12]
+[sys.settings_secure_version]: [2]
+[sys.settings_system_version]: [9]
+[tcmd.suspend]: [0]
+[wifi.interface]: [tiwlan0]
+[wifi.supplicant_scan_interval]: [45]
+[windowsmgr.max_events_per_sec]: [70]
+
+------ KERNEL LOG (dmesg) ------
+ suspend
+<6>[21220.077728] PM: Syncing filesystems ... done.
+<7>[21220.155822] PM: Preparing system for mem sleep
+<4>[21220.156311] Freezing user space processes ... (elapsed 0.08 seconds) done.
+<4>[21220.242645] Freezing remaining freezable tasks ... (elapsed 0.00 seconds) done.
+<7>[21220.243225] PM: Entering mem sleep
+<4>[21220.243316] Suspending console(s) (use no_console_suspend to debug)
+<7>[21220.258270] vfp_pm_save_context: saving vfp state
+<6>[21462.469787] Successfully put all powerdomains to target state
+<6>[21462.469879] WAKEDUP BY: WKUP_MOD(0x108), MPU_IRQSTATUS(0x18010611), INTC_IRQ0(0x20000800), GPIO1(0x1), 
+<6>[21462.470672] wakeup wake lock: cpcap-irq
+<7>[21462.614135] PM: Finishing wakeup.
+<4>[21462.614379] Restarting tasks ... done.
+
+------ KERNEL WAKELOCKS (/proc/wakelocks) ------
+name	count	expire_count	wake_count	active_since	total_time	sleep_time	max_time	last_change
+"mmc_delayed_work"	227	0	2	0	2889190471	2338592326	484130860	538585503516
+"cpcap-irq"	1033	0	193	0	2557312143	2218231317	30700683	612524132671
+"PowerManagerService"	308	0	1	0	247004821384	181139007172	56611145018	604815087252
+"alarm"	278	0	0	0	18962219602	18600891450	262817400	604732842370
+"main"	3	0	0	0	210480529726	0	82332122800	595726921959
+"event1-1274"	78	0	0	0	9033208	0	1373291	562524285250
+"power-supply"	44	0	0	0	213867199	69122319	35430911	548078728601
+"AudioHardwareMot"	4	0	0	0	18251434317	0	7025787346	543041008882
+"mcbsp"	15	0	0	0	18287322984	0	7022338859	543037682465
+"ApmCommandThread"	34	0	0	0	1104492195	0	230255129	540082726410
+"radio-interface"	8	0	0	0	9725738533	0	2109680176	537150536471
+"event6-1274"	399	0	0	0	62133795	0	976564	536627312599
+"KeyEvents"	918	0	0	0	359283463	0	73974611	536627251564
+"event6-1274"	403	0	0	0	95428476	0	7843019	536627251564
+"power-supply"	10	0	0	0	326995864	45104983	98083501	536090020120
+"alarm_rtc"	83	19	0	0	40921720588	40918119515	1002349827	533381646129
+"vril-moto-mdm"	3	0	0	0	16746002103	11675689609	7399291928	474122645395
+"omap_usb_modem"	0	0	0	0	0	0	0	0
+"pwrkey"	2	2	0	0	304718033	0	152862554	78986389143
+"event2-1274"	2	0	0	0	183106	0	122070	67558288553
+"event3-1274"	66	0	0	0	255462654	0	80749512	62051574689
+"event5-1274"	0	0	0	0	0	0	0	0
+"event0-1274"	0	0	0	0	0	0	0	0
+"event4-1274"	0	0	0	0	0	0	0	0
+"event4-1172"	0	0	0	0	0	0	0	0
+"gpio_kp"	1	0	0	0	2746583	0	2746583	978393597
+"gpio_input"	0	0	0	0	0	0	0	0
+"syspanic"	0	0	0	0	0	0	0	0
+"wakeup_driver"	0	0	0	0	0	0	0	0
+"power-supply"	1	0	0	0	0	0	0	460937532
+"unknown_wakeups"	0	0	0	0	0	0	0	0
+"deleted_wake_locks"	359	34	0	0	17107848448	12400573180	690460193	0
+"usb_mass_storage"	2	0	0	75892913818	79505554208	18190429698	75892913818	538024437839
+"usb"	4	0	0	78854370123	101625244130	19089538616	78854370123	535062981534
+"event1-1172"	8	8	0	0	68064331062	4156097418	20827362078	562321770595
+"bpwake"	100	100	25	0	117636350654	62460355891	5470916733	595599327975
+"omap_serial"	100	100	0	0	117815580378	62591947673	5475891097	595602166110
+
+------ KERNEL CPUFREQ (/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state) ------
+1200000 16268
+1000000 889
+800000 1081
+600000 2396
+300000 40569
+
+------ VOLD DUMP (vdc dump) ------
+000 Dumping loop status
+000 Dumping DM status
+000 Dumping mounted filesystems
+000 rootfs / rootfs ro,relatime 0 0
+000 tmpfs /dev tmpfs rw,relatime,mode=755 0 0
+000 devpts /dev/pts devpts rw,relatime,mode=600 0 0
+000 proc /proc proc rw,relatime 0 0
+000 sysfs /sys sysfs rw,relatime 0 0
+000 none /acct cgroup rw,relatime,cpuacct 0 0
+000 tmpfs /mnt/asec tmpfs rw,relatime,mode=755,gid=1000 0 0
+000 none /dev/cpuctl cgroup rw,relatime,cpu 0 0
+000 /dev/block/mmcblk1p21 /system ext3 ro,noatime,nodiratime,barrier=1,data=ordered 0 0
+000 /dev/block/userdata /data ext3 rw,nosuid,nodev,noatime,nodiratime,errors=continue,barrier=1,data=ordered 0 0
+000 /dev/block/cache /cache ext3 rw,nosuid,nodev,noatime,nodiratime,errors=continue,barrier=1,data=ordered 0 0
+000 tmpfs /tmp tmpfs rw,relatime,size=2048k 0 0
+000 /dev/block/pds /pds ext3 rw,nosuid,nodev,noatime,nodiratime,errors=continue,barrier=1,data=ordered 0 0
+000 /dev/block/preinstall /preinstall ext3 rw,nosuid,nodev,noatime,nodiratime,barrier=1,data=ordered 0 0
+000 /sys/kernel/debug /sys/kernel/debug debugfs rw,relatime 0 0
+200 dump complete
+[vdc: 0.3s elapsed]
