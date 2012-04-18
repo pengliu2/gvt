@@ -60,6 +60,7 @@ class Stats(object):
         self.count = 0
         self.duration = 0.0
         self.cost = 0.0
+        self.stats = dict()
 
 class Session(object):
     def __init__(self, name):
@@ -76,6 +77,7 @@ class FullLogSession(Session):
         super(FullLogSession, self).__init__(name)
         self.discharge_sessions = list()
         self.discharge_stats = Stats()
+        self.stats['discharge_stats'] = Stats()
 
 class DischargeSession(Session):
     def __init__(self, name):
@@ -356,18 +358,18 @@ ACTIVITIES = {
     'resumed': (re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
            'RESUMED'
            ),
-#    'sleep': (re.compile('request_suspend_state: sleep (0->3)'),
-#              'DISPLAY-OFF'
-#              ),
-#    'wakeup': (re.compile('request_suspend_state: wakeup (3->0)'),
-#               'DISPLAY-ON'
-#               ),
-#    'charging': (re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
-#                'CHARGING'
-#                 ),
-#    'discharging': (re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
-#                    'DISCHARGING'
-#                    ),
+    'sleep': (re.compile('request_suspend_state: sleep (0->3)'),
+              'DISPLAY-OFF'
+              ),
+    'wakeup': (re.compile('request_suspend_state: wakeup (3->0)'),
+               'DISPLAY-ON'
+               ),
+    'charging': (re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
+                'CHARGING'
+                 ),
+    'discharging': (re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+                    'DISCHARGING'
+                    ),
     }
 DATA = {
     'suspend_current': (re.compile('pm_debug: suspend uah=(-{0,1}\d+)')),
