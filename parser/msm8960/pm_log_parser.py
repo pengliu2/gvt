@@ -54,13 +54,22 @@ def __find_top(d, t1, t2, t3):
         __place_value(k,v2,t2)
         __place_value(k,v3,t3)
 
+################################################################################
+# Not used yet
 class Stats(object):
     def __init__(self, name):
         self.name = name
         self.count = 0
         self.duration = 0.0
         self.cost = 0.0
-        self.stats = dict()
+
+class Top(object):
+    def __init__(self, name, count):
+        self.name = name
+        self.count = count
+        self.list = list()
+        for i in range(count):
+            self.list.append(('', -1.0))
 
 class Session(object):
     def __init__(self, name):
@@ -69,15 +78,13 @@ class Session(object):
         self.end = 0
         self.duration = 0.0
         self.cost = 0.0
-        self.children = dict()
-        self.states = dict()
 
 class FullLogSession(Session):
     def __init__(self, name):
         super(FullLogSession, self).__init__(name)
         self.discharge_sessions = list()
         self.discharge_stats = Stats()
-        self.stats['discharge_stats'] = Stats()
+        self.discharge_top = Top(
 
 class DischargeSession(Session):
     def __init__(self, name):
@@ -96,7 +103,13 @@ class DisplayOffSession(Session):
     pass
 
 class ActiveSession(Session):
-    pass
+    def __init__(self,name):
+        super(ActiveSession, self).__init__(name)
+        self.reason = UNKNOWN
+        self.
+
+# Not used yet
+################################################################################
 
 def __init_sum():
     summary = dict()
@@ -381,6 +394,10 @@ DATA = {
     'wakeup_wakelock': (re.compile('wakeup wake lock: (\w+)')),
     'suspend_duration': (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)')),
     'failed_device': (re.compile('PM: Device ([^ ]+) failed to suspend')),
+    'sleep_current': (re.compile('pm_debug: sleep uah=(-{0,1}\d+)')),
+    'wakeup_current': (re.compile('pm__debug: wakeup uah=(-{0,1}\d+)')),
+    'sleep': (re.compile('request_suspend_state: sleep (0->3)')),
+    'wakeup': (re.compile('request_suspend_state: wakeup (3->0)')),
     }
 def __state_change_hook(c,s,k):
     x_name = string.lower("__%s_leave"%c['state'])
@@ -594,7 +611,13 @@ NEXT_STATEs = {
          'aborted1',
          'aborted2',
          'aborted3',
-         ]
+         ],
+    'CHARGING':
+        ['discharging',
+        ],
+    'DISCHARGING':
+        ['preparing',
+        ],
     }
 COLLECTING_DATA = {
     'SUSP_KICKED':
@@ -624,6 +647,13 @@ COLLECTING_DATA = {
          'failed_device',
          ],
     'RESUMED':
+        [
+        ],
+    'CHARGING':
+        ['sleep',
+         'wakeup',
+        ],
+    'DISCHARGING':
         [
         ],
     }
