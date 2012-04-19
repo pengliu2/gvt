@@ -29,57 +29,86 @@ def __current_time(c):
     return c['kernel_log_end_ts'] + KERNEL_TIME_LIMIT *\
         c['kernel_time_wrapup_counter']
 
-def __init_top(v):
-    t = list()
-    for i in range(TOP):
-        t.append(v)
-    return t
+#def __init_top(v):
+#    t = list()
+#    for i in range(TOP):
+#        t.append(v)
+#    return t
+#
+#def __place_value(k, v, t):
+#    i = 0
+#    while (i < TOP):
+#        t1,t2 = t[i]
+#        if v > t2:
+#            break
+#        i += 1
+#    if i < TOP:
+#        t.insert(i, (k,v))
+#    return t[0:TOP]
+#    
+#
+#def __find_top(d, t1, t2, t3):
+#    for k in d.keys():
+#        v1,v2,v3 = d[k]
+#        __place_value(k,v1,t1)
+#        __place_value(k,v2,t2)
+#        __place_value(k,v3,t3)
 
-def __place_value(k, v, t):
-    i = 0
-    while (i < TOP):
-        t1,t2 = t[i]
-        if v > t2:
-            break
-        i += 1
-    if i < TOP:
-        t.insert(i, (k,v))
-    return t[0:TOP]
-    
-
-def __find_top(d, t1, t2, t3):
-    for k in d.keys():
-        v1,v2,v3 = d[k]
-        __place_value(k,v1,t1)
-        __place_value(k,v2,t2)
-        __place_value(k,v3,t3)
+class Top(object):
+    def __init__(self, count):
+        self.list = list()
+        self.count = count
+        for i in range(count):
+            t.append((0.0, None))
+        return
+    def insert(self, value, obj):
+        i = 0
+        while (1 < self.count):
+            v,o = self.list[i]
+            if value > v:
+                break
+            i += 1
+        if i < self.count:
+            self.list.insert((value, obj))
+            self.list = self.list[0,self.count]
+        return
 
 class Stats(object):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.count = 0
         self.duration = 0.0
         self.cost = 0.0
 
 class Session(object):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.start = -1.0
         self.end = 0
-        self.duration = 0.0
-        self.cost = 0.0
-        self.children = dict()
-        self.states = dict()
 
 class FullLogSession(Session):
     def __init__(self, name):
         super(FullLogSession, self).__init__(name)
         self.discharge_sessions = list()
-        self.discharge_stats = Stats()
+        self.discharge_top = Top()
 
 class DischargeSession(Session):
     def __init__(self, name):
         super(FullLogSession, self).__init__(name)
+        self.stats = Stats()
+        self.wakeup_stats = dict()
+        self.displayon_stats = Stats()
+        self.resume_stats = Stats()
+        self.abort_stats = Stats()
+        self.device_stats = Stats()
+        self.displayoff_stats = Stats()
+        self.wakeup_stats = Stats()
+        self.suspend_stats = Stats()
+        self.displayon_duration_top = Top()
+        self.displayon_cost_top = Top()
+        self.abort_duration_top = Top()
+        self.abort_cost_top = Top()
+        self.device_duration_top = Top()
+        self.device_cost_top = Top()
+        self.
 
 class WakeupSession(Session):
     pass
