@@ -1,4 +1,6 @@
 import string,os,re,sys
+from optparse import OptionParser
+
 
 TOP = 5
 SOFTWARE_NAME = 'log parser'
@@ -8,7 +10,7 @@ LAST_UPDATE = 'Apr 06, 2012'
 ################################################################################
 UNKNOWN = 'UNKNOWN'
 TIME_UNIT = 1000000000
-
+VERBOSE = False
 # Utility functions
 debug = True
 def __debug_print(msg):
@@ -175,12 +177,13 @@ def __init_cur():
     cur_state['activated_time'] = -1.0
     cur_state['activated_ts'] = UNKNOWN
     # This is for tne nearest resume
-    cur_state['wakeup_source'] = UNKNOWN
-    cur_state['wakeup_wakelock'] = UNKNOWN
+#    cur_state['wakeup_source'] = UNKNOWN
+#    cur_state['wakeup_wakelock'] = UNKNOWN
 
-    cur_state['failed_device'] = UNKNOWN
-    cur_state['active_wakelock'] = UNKNOWN
+#    cur_state['failed_device'] = UNKNOWN
+#    cur_state['active_wakelock'] = UNKNOWN
     cur_state['last_active_reason'] = UNKNOWN
+    cur_state['active_reason'] = UNKNOWN
 
     cur_state['kernel_time_stamp'] = ''
     cur_state['discharge_start_time'] = 0.0
@@ -225,6 +228,7 @@ def __close_latest_displayon(c,s):
                            c['susp_kicked_coulomb']
                            )
                       )
+        cost = float(cost)/1000
         session = Session(c['wakeup_ts'], c['sleep_ts'], time, cost)
         s.awoken_sum.displayon_sum.add(time, cost)
         s.awoken_sum.top_cost_displayon.insert(session)
@@ -236,11 +240,12 @@ def __susp_kicked_enter_hook(c,s):
     c['susp_kicked_time'] = __current_time(c)
     c['susp_kicked_ts'] = c['kernel_time_stamp']
     c['susp_kicked_coulomb'] = sys.maxint
-    c['active_wakelock'] = UNKNOWN
     c['longest_wakelock_name'] = UNKNOWN
     c['longest_wakelock_len'] = 0.0
     c['failed_device'] = UNKNOWN
     c['active_wakelock'] = UNKNOWN
+    c['last_active_reason'] = c['active_reason']
+    c['active_reason'] = UNKNOWN
     return 
 
 def __susp_kicked_leave_hook(c,s):
@@ -254,6 +259,7 @@ def __susp_kicked_leave_hook(c,s):
                            c['susp_kicked_coulomb'],
                            c['activated_coulomb']
                            ))
+    cost = float(cost)/1000
     session = Session(c['activated_ts'], c['susp_kicked_ts'], time, cost)
     if c['longest_wakelock_name'] != UNKNOWN:
         __add_onto_elem_in_dict(
@@ -309,8 +315,6 @@ def __suspended_enter_hook(c,s):
     c['suspend_result'] = suspend_result['SUCCESS']
     time = c['susp_kicked_time'] - c['resume_time']
     cost = c['susp_kicked_coulomb'] - c['resume_coulomb']
-    s.awoken_sum.duration += time
-    s.awoken_sum.cost += cost
     if cost < 0:
         cost = 0
         __error_print('cost < 0 at %s (%d - %d)'%\
@@ -318,6 +322,9 @@ def __suspended_enter_hook(c,s):
                            c['susp_kicked_coulomb'],
                            c['resume_coulomb']
                            ))
+    cost = float(cost)/1000
+    s.awoken_sum.duration += time
+    s.awoken_sum.cost += cost
     session = Session(c['resume_ts'], c['susp_kicked_ts'], time, cost)
     s.awoken_sum.top_cost_awoken.insert(session)
     s.awoken_sum.top_duration_awoken.insert(session)
@@ -337,11 +344,11 @@ def __suspended_leave_hook(c,s):
                            c['susp_kicked_coulomb']
                            )
                       )
+    cost = float(cost)/1000
     s.suspend_sum.add(time, cost)
     c['resume_time'] = __current_time(c)
     c['resume_ts'] = c['kernel_time_stamp']
     c['resume_coulomb'] = c['activated_coulomb']
-    c['active_reason'] = UNKNOWN
     return
 
 def __resumed_enter_hook(c,s):
@@ -349,8 +356,6 @@ def __resumed_enter_hook(c,s):
     c['activated_time'] = __current_time(c)
     c['activated_ts'] = c['kernel_time_stamp']
     c['sleep_coulomb'] = 0.0
-    c['last_active_reason'] = c['active_reason']
-    c['active_reason'] = UNKNOWN
     # TODO: should write into the spreadsheet file as well
     return
 
@@ -392,8 +397,6 @@ def __displayon_leave_hook(c,s):
     c['active_ts'] = c['kernel_time_stamp']
     c['suspend_result'] = suspend_result['DISPLAY']
     c['display'] = 'OFF'
-    c['last_active_reason'] = UNKNOWN
-    c['active_reason'] = UNKNOWN
     return
 
 # The Functions to be called when state changes
@@ -755,7 +758,7 @@ def run(fobj_in, fobj_out):
         t,b = time_and_body(l)
         if t is not None:
             # Check if there's kernel time wrap-up
-            if not disch:
+            if disch is None:
                 disch = DischargeSession()
                 discharging_activity_hook(cur_state, None, disch, None)
             else:
@@ -776,7 +779,7 @@ def run(fobj_in, fobj_out):
                 next_state = hook(cur_state, m, disch, k)
                 if next_state == 'CHARGING' and c != 'CHARGING':
                     full.discharge_sessions.append(disch)
-                    disch = None
+                    disch = DischargeSession()
             else:
                 k,m =__collect_data(cur_state, b)
                 if k:
@@ -832,7 +835,7 @@ def table(tab_n, header, values, widths=None):
     print ''
 
 def sum_table(tab_n, sum_dict, width = TAB_2_WIDTH):
-    header = ['name','count','duration','cost']
+    header = ['name','count','duration(seconds)','cost(mAh)']
     cells = list()
     for s in sum_dict.keys():
         i = sum_dict[s]
@@ -841,7 +844,7 @@ def sum_table(tab_n, sum_dict, width = TAB_2_WIDTH):
     return
 
 def top_table(tab_n, top_list,\
-                  header=['name','count','duration','cost'],\
+                  header=['name','count','duration(seconds)','cost(mAh)'],\
                   fields=['name','count','duration','cost'],\
                   width = [TAB_2_WIDTH]*4):
     cells = list()
@@ -859,7 +862,7 @@ def print_summary(full,last_discharge):
     print '=============================='
     print 'There are following discharge periods:'
     top_table(2, full.discharge_sessions,\
-                  ['Duration','Start','End'],\
+                  ['Duration(seconds)','Start','End'],\
                   ['duration','start','end'],\
                   )
     print '=============================='
@@ -882,10 +885,10 @@ def print_summary(full,last_discharge):
         if j.duration != 0:
             cells.append([i, '%.2f(%.2f)'%(j.duration, j.duration/total_duration),\
                               '%.2f(%.2f)'%(j.cost, j.cost/total_cost),\
-                              '%.2f'%(j.cost/j.duration)
+                              '%.2f'%(3600*j.cost/j.duration)
                           ])
-    table(1, ['\t', 'Total Duration', 'Total Cost', 'Average Current'], cells)
-    print 'Reasons of Getting Awoken'
+    table(1, ['', 'Total Duration(seconds)', 'Total Cost(mAh)', 'Average Current(mA)'], cells)
+    print 'Wake-Ups'
     cells = list()
     tops = dict()
     for n,d in [('From Suspend', awoken_sum.resume_stats),
@@ -903,7 +906,7 @@ def print_summary(full,last_discharge):
             time += d[i].duration
             cost += d[i].cost
         cells.append([n,'%d'%count,'%.2f'%time, '%.2f'%cost])
-    table(1, ['Reason', 'Count', 'Duration', 'Cost'], cells)
+    table(1, ['Reason', 'Count', 'Duration(seconds)', 'Cost(mAh)'], cells)
 
     print '\tTop Wakeup Sources in Count'
     t = Top('count')
@@ -917,6 +920,9 @@ def print_summary(full,last_discharge):
     t = Top('duration')
     t.select(awoken_sum.failure_stats.values())
     top_table(2, t.list)
+
+    if VERBOSE == False:
+        return
 
     print '=============================='
     print 'Hot Spots'
@@ -964,7 +970,7 @@ def print_summary(full,last_discharge):
 
     print 'Longest Awoken Sessions'
     top_table(1, awoken_sum.top_duration_awoken.list,\
-                  ['duration','start','end','cost'],\
+                  ['duration(seconds)','start','end','cost(mAh)'],\
                   ['duration','start','end','cost',]\
                   )
     print 'Most Expesive Awoken Sessions'
@@ -992,259 +998,7 @@ def print_summary(full,last_discharge):
                   ['duration','start','end','cost'],\
                   ['duration','start','end','cost',]\
                   )
-
-def print_sum(s):
-    try:
-        n_active,t_active,c_active = s['session_stats']['active']
-    except:
-        n_active = 0
-        t_active = 0.0000000001
-        c_active = 0
-    total_cost = c_active
-    try:
-        n_suspend,t_suspend,c_suspend = s['session_stats']['suspend']
-    except:
-        n_suspend = 0
-        t_suspend = 0.000000001
-        c_suspend = 0
-    total_cost += c_suspend
-
-    if total_cost == 0:
-        print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        print '                              Can\'t Work On User Build Log                     '
-        print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        return
-
-    print '=================='
-    print 'Suspend Statistics'
-    print '=================='
-#    print '\t'+'Total Duration Covered by The Log (s)\t= %f'%\
-#        s['kernel_log_duration']
-
-#    print '\t'+'Total Active Duration (s)\t\t= %f (%%%.1f)'%\
-#        (t_active,100*t_active/s['kernel_log_duration'])
-#    print '\t'+'Total Suspend Duration (s)\t\t= %f (%%%.1f)'%\
-#        (t_suspend,100*t_suspend/s['kernel_log_duration'])
-
-#    print '\t'+'Total Active Session Cost (mAh)\t\t= %.2f (%%%.1f)'%\
-#        (float(c_active)/1000,100*c_active/total_cost)
-#    print '\t'+'Total Suspend Session Cost (mAh)\t\t= %.2f (%%%.1f)'%\
-#        (float(c_suspend)/1000,100*c_suspend/total_cost)
-
-#    print '\t'+'Active Session Current Drain\t\t= %f'%\
-#        (c_active/t_active)
-#    print '\t'+'Suspend Session Current Drain\t\t= %f'%\
-#        (c_suspend/t_suspend)
-#    print os.linesep
-
-    try:
-        print '\t'+'Number of times suspend attempted\t= %i (every %.1f s)'%\
-            (s['suspend_attempt_counter'],
-             s['kernel_log_duration']/s['suspend_attempt_counter'])
-    except:
-        pass
-    try:
-        print '\t'+'Number of times device failed\t\t= %i (every %.1f s)'%\
-            (s['device_failed_counter'],
-             s['kernel_log_duration']/s['device_failed_counter'])
-    except:
-        pass
-    try:
-        print '\t'+'Number of times freezing aborted\t= %i (every %.1f s)'%\
-            (s['freezing_abort_counter'],
-             s['kernel_log_duration']/s['freezing_abort_counter'])
-    except:
-        pass
-    try:
-        print '\t'+'Number of total wake-ups\t= %i (every %.1f s)'%\
-            (n_suspend,s['kernel_log_duration']/n_suspend)
-    except:
-        pass
-    print os.linesep
-
-    top_count = __init_top(('',0))
-    top_duration = __init_top(('',0.0))
-    top_cost = __init_top(('',0.0))
-    d = s['active_wakelock_stats']
-    __find_top(d, top_count, top_duration, top_cost)
-    print '===================='
-    print 'Freezing Abort Stats'
-    print '===================='
-    print '\t'+'Top %d failure reasons are:'%TOP
-    for i in range(TOP):
-        k,v = top_count[i]
-        if len(k):
-            print '\t\t'+k+': %i'%v
-    print '\t'+'Top %d longest failure reasons are:'%TOP
-    for i in range(TOP):
-        k,v = top_duration[i]
-        if len(k):
-            print '\t\t'+k+': %f'%v
-    print '\t'+'Top %d costly failure reasons are:'%TOP
-    for i in range(TOP):
-        k,v = top_cost[i]
-        if len(k):
-            print '\t\t'+k+': %.2f'%(float(v)/1000)
-    print os.linesep
-    
-    top_count = __init_top(('',0))
-    top_duration = __init_top(('',0.0))
-    top_cost = __init_top(('',0.0))
-    d = s['device_failed_stats']
-    __find_top(d, top_count, top_duration, top_cost)
-    print '===================='
-    print 'Device Failure Stats'
-    print '===================='
-    print '\t'+'Top %d failed devices are:'%TOP
-    for i in range(TOP):
-        k,v = top_count[i]
-        if len(k):
-            print '\t\t'+k+': %i'%v
-    print '\t'+'Top %d longest device failures are:'%TOP
-    for i in range(TOP):
-        k,v = top_duration[i]
-        if len(k):
-            print '\t\t'+k+': %f'%v
-    print '\t'+'Top %d costly device failures are:'%TOP
-    for i in range(TOP):
-        k,v = top_cost[i]
-        if len(k):
-            print '\t\t'+k+': %.2f'%(float(v)/1000)
-    print os.linesep
-
-    top_count = __init_top(('',0))
-    top_duration = __init_top(('',0.0))
-    top_cost = __init_top(('',0.0))
-    d = s['wakeup_wakelock_stats']
-    __find_top(d, top_count, top_duration, top_cost)
-    print '=================='
-    print 'Wakeups'
-    print '=================='
-    print '\t'+'Top %d wakeup wakelocks are:'%TOP
-    for i in range(TOP):
-        k,v = top_count[i]
-        if len(k):
-            print '\t\t%s: %i'%(k,v)
-    print '\t'+'Top %d longest wakeup wakelocks are:'%TOP
-    for i in range(TOP):
-        k,v = top_duration[i]
-        if len(k):
-            print '\t\t%s: %f'%(k,v)
-    print '\t'+'Top %d costly wakeup wakelocks are:'%TOP
-    for i in range(TOP):
-        k,v = top_cost[i]
-        if len(k):
-            print '\t\t%s: %.2f'%(k,float(v)/1000)
-    print os.linesep
-
-    top_count = __init_top(('',0))
-    top_duration = __init_top(('',0.0))
-    top_cost = __init_top(('',0.0))
-    d = s['longest_wakelock_stats']
-    __find_top(d, top_count, top_duration, top_cost)
-    print '=================='
-    print 'Wakelocks'
-    print '=================='
-    print 'Top %d suspend blockers:'%TOP
-    for i in range(TOP):
-        k,v = top_count[i]
-        if len(k):
-            print '\t\t%s: %d'%(k,v)
-#    print 'Top %d costly suspend blockers:'%TOP
-#    for i in range(TOP):
-#        k,v = top_cost[i]
-#        if len(k):
-#            print '\t\t%s: %f'%(k,v)
-    print 'Top %d longest suspend blockers:'%TOP
-    for i in range(TOP):
-        k,v = top_duration[i]
-        if len(k):
-            print '\t\t%s: %f'%(k,v)
-
-    print 'Top %d longest blocking wakelock instances:'%TOP
-    d = s['top_longest_blocking_wakelock']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%d ended at %s'%(l,e)
-#    print 'Top %d costly suspend blocking sessions:'%TOP
-#    for i in range(TOP):
-#        c,s,e = s['top_costly_blocking_session']
-#        print '\t'+'%d mC\t\tfrom %s to %s'%(c,s,e)
-#    print 'Top %d longest suspend blocking sessions:'%TOP
-#    d = s['top_longest_blocking_session']
-#    for i in range(TOP):
-#        e,l = d[i]
-#        print '\t'+'%f \t\t until %s'%(l,e)
-    print os.linesep
-
-    print '=================='
-    print 'Suspend Sessions'
-    print '=================='
-    print '\t'+'Top %d costly suspend sessions:'%TOP
-    d = s['top_costly_suspend_session']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%.2f mAh\t\tended at %s mA'%(float(l)/1000, e)
-    print os.linesep
-
-    print '\t'+'Top %d longest suspend sessions:'%TOP
-    d = s['top_longest_suspend_session']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%d \t\tended at %s'%(l,e)
-    print os.linesep
-
-    print '=================='
-    print 'Active Sessions'
-    print '=================='
-    print '\t'+'Top %d costly active sessions:'%TOP
-    d = s['top_costly_active_session']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%.2f mAh\t\t ended at %s mA'%(float(l)/1000,e)
-    print os.linesep
-
-    print '\t'+'Top %d longest active sessions:'%TOP
-    d = s['top_longest_active_session']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%d \t\t ended at %s'%(l,e)
-    print os.linesep
-
-    print '=================='
-    print 'Wakeup Sessions'
-    print '=================='
-    print '\t'+'Top %d costly wakeup sessions:'%TOP
-    d = s['top_costly_wakeup_session']
-    i = 0
-    while(i < 5):
-        e,l = d[i]
-        print '\t'+'%.2f mAh\t\t ended at %s mA'%(float(l)/1000,e)
-        i += 1
-    print os.linesep
-
-    print '\t'+'Top %d longest wakeup sessions:'%TOP
-    d = s['top_longest_wakeup_session']
-    for i in range(TOP):
-        e,l = d[i]
-        print '\t'+'%d \t\t ended at %s'%(l,e)
-    print os.linesep
-
-    print '=================='
-    print 'Display On'
-    print '=================='
-    print 'Coming Soon'
-    # display-on total time
-    # display-on total cost
-    # display-on longest top n
-    # display-on costly top n
-    print os.linesep
-
-    print '=================='
-    print 'Charging'
-    print '=================='
-    print 'Coming Soon'
-    # charging total time
+    return
 
 if __name__ == "__main__":
     sys.stderr.write(SOFTWARE_NAME+' '+LAST_UPDATE+os.linesep)
@@ -1253,11 +1007,19 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         __usage()
 
+    parser = OptionParser()
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
+                      default=False,
+                      help="")
+    (options, args) = parser.parse_args(sys.argv)
+    VERBOSE = options.verbose
+    objfile = args[1]
+
     fobj_in = None
     fobj_out = None
     try:
-        fobj_in = open(sys.argv[1], 'r')
-        fobj_out = open(sys.argv[1]+'.csv', 'w')
+        fobj_in = open(objfile, 'r')
+#        fobj_out = open(objfile+'.csv', 'w')
     except Exception as e:
         __error_print('Opening input or output file'+
                       os.linesep + e)
@@ -1268,7 +1030,7 @@ if __name__ == "__main__":
     f,s = run(fobj_in, fobj_out)
     print_summary(f,s)
 
-    fobj_out.close()
+#    fobj_out.close()
     fobj_in.close()
 # Main Sections Ends
 ################################################################################
