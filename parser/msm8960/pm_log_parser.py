@@ -106,11 +106,13 @@ class Top(object):
             self.insert(i)
 
 class Session(object):
-    def __init__(self, start=UNKNOWN, end=UNKNOWN, duration=0.0, cost=0.0):
+    def __init__(self, start=UNKNOWN, end=UNKNOWN, duration=0.0, cost=0.0, typ=UNKNOWN, reason = UNKNOWN):
         self.start = start
         self.end = end
         self.cost = cost
         self.duration = duration
+        self.type = typ
+        self.reason = reason
 
 class FullLogSession(Session):
     def __init__(self):
@@ -159,6 +161,7 @@ class DischargeSession(Session):
 
 def __init_cur():
     cur_state = dict()
+
     cur_state['state'] = UNKNOWN
 
     # This is for the last resume from successful suspend
@@ -177,11 +180,6 @@ def __init_cur():
     cur_state['activated_time'] = -1.0
     cur_state['activated_ts'] = UNKNOWN
     # This is for tne nearest resume
-#    cur_state['wakeup_source'] = UNKNOWN
-#    cur_state['wakeup_wakelock'] = UNKNOWN
-
-#    cur_state['failed_device'] = UNKNOWN
-#    cur_state['active_wakelock'] = UNKNOWN
     cur_state['last_active_reason'] = UNKNOWN
     cur_state['active_reason'] = UNKNOWN
 
@@ -297,7 +295,6 @@ def __susp_aborted_enter_hook(c,s):
     c['suspend_result'] = suspend_result['ABORTED']
     c['activated_coulomb'] = c['susp_kicked_coulomb']
     c['susp_kicked_coulomb'] = sys.maxint
-    c['active_reason'] = UNKNOWN
     return
 def __susp_aborted_leave_hook(c,s):
     return
@@ -391,6 +388,43 @@ def __displayon_enter_hook(c,s):
     return
 
 def __displayon_leave_hook(c,s):
+    # Can close the active session before display turned on
+    time = __current_time(c) - c['wakeup_time']
+    cost = c['wakeup_coulomb'] - c['activated_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['susp_kicked_coulomb'],
+                           c['activated_coulomb']
+                           ))
+    cost = float(cost)/1000
+    session = Session(c['activated_ts'], c['wakeup_ts'], time, cost)
+    s.awoken_sum.top_duration_active.insert(session)
+    s.awoken_sum.top_cost_active.insert(session)
+    r = UNKNOWN
+    d = None
+    a = None
+    if c['suspend_result'] == suspend_result['SUCCESS']:
+        d = s.awoken_sum.resume_stats
+    elif c['suspend_result'] == suspend_result['DEVICE']:
+        d = s.awoken_sum.failure_stats
+    elif c['suspend_result'] == suspend_result['ABORTED']:
+        d = s.awoken_sum.abort_stats
+    elif c['suspend_result'] == suspend_result['DISPLAY']:
+        s.awoken_sum.displayoff_sum.add(time, cost)
+        return
+    else:
+        d = s.awoken_sum.unknown_stats
+    
+    __add_onto_elem_in_dict(
+        d,
+        c['last_active_reason'],
+        1, time, cost
+        )
+    c['last_active_reason'] = UNKNOWN
+    c['active_reason'] = 'DISPLAY'
+
     c['sleep_time'] = __current_time(c)
     c['sleep_ts'] = c['kernel_time_stamp']
     c['active_time'] = __current_time(c)
@@ -744,6 +778,61 @@ def time_and_body(line):
 
 ################################################################################
 # Main Section Starts
+REGEX = {
+    # Linux standard info
+    'booting': re.compile('Booting Linux'),
+    'preparing': re.compile('PM: Preparing system for mem sleep'),
+    'aborted1': re.compile('Freezing of tasks  aborted'),
+    'aborted2': re.compile('Freezing of user space  aborted'),
+    'aborted3': re.compile('suspend aborted....'),
+    'devicefailed': re.compile('PM: Some devices failed to [(suspend)|(power down)]'),
+    'resumed': re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
+    'failed_device': (re.compile('PM: Device ([^ ]+) failed to suspend')),
+    # Motorola debug info
+    'susp_kicked_coulomb': (re.compile('pm_debug: suspend uah=(-{0,1}\d+)')),
+    'resume_coulomb': (re.compile('pm_debug: resume uah=(-{0,1}\d+)')),
+    'longest_wakelock': (re.compile('longest wake lock: \[([^\]]+)\]\[(\d+)\]')),
+    'suspend_duration': (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)')),
+    'sleep_coulomb': (re.compile('pm_debug: sleep uah=(-{0,1}\d+)')),
+    'wakeup_coulomb': (re.compile('pm_debug: wakeup uah=(-{0,1}\d+)')),
+    'active_wakelock': (re.compile('active wake lock ([^, ]+),*')),
+    'sleep': re.compile('request_suspend_state: sleep (0->3)'),
+    'wakeup': re.compile('request_suspend_state: wakeup (3->0)'),
+    'wakeup_wakelock': (re.compile('wakeup wake lock: (\w+)')),
+    # MSM
+    'suspended': re.compile('msm_pm_enter: power collapse'),
+    'charging': re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
+    'discharging': re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+    }
+
+def roll(fobj_in, fobj_out):
+    cur_state = __init_cur()
+    live_sessions = dict()
+    live_sessions['full'] = None
+    live_sessions['discharge'] = None
+    live_sessions['charge'] = None
+    live_sessions['active'] = None
+    live_sessions['suspend'] = None
+
+    l = fobj_in.readline()
+    while (len(l)):
+        t,b = time_and_body(l)
+        if t is not None:
+            if not live_sessions['full']:
+                live_sessions['full'] = Session(start=t)
+            for k in REGEX.keys():
+                r = REGEX[k]
+                m = r.match(l)
+                if m is not None:
+                    if '%s_regex_hook'%k in globals().keys():
+                        hook = globals()['%s_regex_hook'%k]
+                        hook(live_sessions, cur_state, m)
+    # close all live sessions
+    for e in live_sessions.values():
+        if e:
+            e.finish(cur_state)
+    return live_sessions['full'], live_sessions['discharge']
+
 def run(fobj_in, fobj_out):
     """ """
     # All stats dict values have following format:
