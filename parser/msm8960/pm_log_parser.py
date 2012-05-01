@@ -106,13 +106,22 @@ class Top(object):
             self.insert(i)
 
 class Session(object):
-    def __init__(self, start=UNKNOWN, end=UNKNOWN, duration=0.0, cost=0.0, typ=UNKNOWN, reason = UNKNOWN):
+    def __init__(self,
+                 start=UNKNOWN,
+                 start_time=0,
+                 end=UNKNOWN,
+                 duration=0.0,
+                 cost=0.0,
+                 typ=UNKNOWN,
+                 reason = UNKNOWN):
         self.start = start
         self.end = end
         self.cost = cost
         self.duration = duration
         self.type = typ
         self.reason = reason
+        self.start_time = start_time
+        self.end_time = 0
 
 class FullLogSession(Session):
     def __init__(self):
@@ -126,6 +135,15 @@ suspend_result = {
     'DEVICE': 2,
     'DISPLAY': 3,
     'BOOTUP': 999
+    }
+
+session_type = {
+    'UNKNOWN': -1,
+    'WAKEUP': 0,
+    'ABORTED': 1,
+    'DEVICE': 2,
+    'DISPLAY': 3,
+    'BOOTUP': 999,
     }
 
 class AwokenSum(Sum):
@@ -780,30 +798,247 @@ def time_and_body(line):
 # Main Section Starts
 REGEX = {
     # Linux standard info
-    'booting': re.compile('Booting Linux'),
-    'preparing': re.compile('PM: Preparing system for mem sleep'),
-    'aborted1': re.compile('Freezing of tasks  aborted'),
-    'aborted2': re.compile('Freezing of user space  aborted'),
-    'aborted3': re.compile('suspend aborted....'),
-    'devicefailed': re.compile('PM: Some devices failed to [(suspend)|(power down)]'),
-    'resumed': re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
-    'failed_device': (re.compile('PM: Device ([^ ]+) failed to suspend')),
+    'booting':
+        (re.compile('Booting Linux'),
+         'booting_regex_hook'),
+    'freezing':
+        (re.compile('Freezing of user space'),
+         'freezing_regex_hook'),
+    'aborted1':
+        (re.compile('Freezing of tasks  aborted'),
+         'aborted_regex_hook'),
+    'aborted2':
+        (re.compile('Freezing of user space  aborted'),
+         'aborted_regex_hook'),
+    'aborted3':
+        (re.compile('suspend aborted....'),
+         'aborted_regex_hook'),
+    'devicefailed':
+        (re.compile('PM: Some devices failed to [(suspend)|(power down)]'),
+         'devicefailed_regex_hook'),
+    'resumed':
+        (re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
+         'resumed_regex_hook'),
+    'failed_device':
+        (re.compile('PM: Device ([^ ]+) failed to suspend'),
+         'failed_device_regex_hook'),
     # Motorola debug info
-    'susp_kicked_coulomb': (re.compile('pm_debug: suspend uah=(-{0,1}\d+)')),
-    'resume_coulomb': (re.compile('pm_debug: resume uah=(-{0,1}\d+)')),
-    'longest_wakelock': (re.compile('longest wake lock: \[([^\]]+)\]\[(\d+)\]')),
-    'suspend_duration': (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)')),
-    'sleep_coulomb': (re.compile('pm_debug: sleep uah=(-{0,1}\d+)')),
-    'wakeup_coulomb': (re.compile('pm_debug: wakeup uah=(-{0,1}\d+)')),
-    'active_wakelock': (re.compile('active wake lock ([^, ]+),*')),
-    'sleep': re.compile('request_suspend_state: sleep (0->3)'),
-    'wakeup': re.compile('request_suspend_state: wakeup (3->0)'),
-    'wakeup_wakelock': (re.compile('wakeup wake lock: (\w+)')),
+    'susp_coulomb': # Not in user build
+        (re.compile('pm_debug: suspend uah=(-{0,1}\d+)'),
+         'susp_coulomb_regex_hook'),
+    'resume_coulomb': # Not in user build
+        (re.compile('pm_debug: resume uah=(-{0,1}\d+)'),
+         'resume_coulomb_regex_hook'),
+    'longest_wakelock': # Not in user build
+        (re.compile('longest wake lock: \[([^\]]+)\]\[(\d+)\]'),
+         'longest_wakelock_regex_hook'),
+    'suspend_duration':
+        (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)'),
+         'suspend_duration_regex_hook'),
+    'sleep_coulomb': # Not in user build
+        (re.compile('pm_debug: sleep uah=(-{0,1}\d+)'),
+         'sleep_coulomb_regex_hook'),
+    'wakeup_coulomb': # Not in user build
+        (re.compile('pm_debug: wakeup uah=(-{0,1}\d+)'),
+         'wakeup_coulomb_regex_hook'),
+    'active_wakelock':
+        (re.compile('active wake lock ([^, ]+),*'),
+         'active_wakelock_regex_hook'),
+    'sleep':
+        (re.compile('request_suspend_state: sleep (0->3)'),
+         'sleep_regex_hook'),
+    'wakeup':
+        (re.compile('request_suspend_state: wakeup (3->0)'),
+         'wakeup_regex_hook'),
+    'wakeup_wakelock':
+        (re.compile('wakeup wake lock: (\w+)'),
+         'wakeup_wakelock_regex_hook'),
     # MSM
-    'suspended': re.compile('msm_pm_enter: power collapse'),
-    'charging': re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
-    'discharging': re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+    'suspended':
+        (re.compile('msm_pm_enter: power collapse'),
+         'suspended_regex_hook'),
+    'charging':
+        (re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
+         'charging_regex_hook'),
+    'discharging':
+        (re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+         'discharging_regex_hook'),
     }
+
+def __missing_log_warning(c):
+    __error_print('There might be log missing before %s'%c['kernel_time_stamp'])
+    return
+
+def __close_suspend(sessions, state, matches):
+    if sessions['suspend'] is not None:
+        sessions['suspend'] = Session(
+            start=state['kernel_time_stamp'],
+            start_time=__current_time(state)
+            )
+    return
+
+def _start_suspend(session, state, matches):
+    if sessions['suspend'] is None:
+        sessions['suspend'] = Session(
+            start=state['kernel_time_stamp'],
+            start_time=__current_time(state)
+            )
+    return
+
+def __close_active(session, state, matches):
+    return
+
+def __start_active(session, state, matches):
+    return
+
+def __start_charge(session, state, matches):
+    return
+
+def __start_discharge(session, state, matches):
+    return
+
+def __start_wakeup(session, state, matches):
+    return
+
+def booting_regex_hook(sessions, state, matches):
+    sessions['discharge'] = DischargeSession(
+        start=state['kernel_time_stamp'],
+        start_time=__current_time(state)
+        )
+    sessions['wakeup'] = Session(
+        start=state['kernel_time_stamp'],
+        reason='bootup',
+        start_time=__current_time(state)
+        )
+    return
+
+def susp_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    if sessions['suspend'] is not None:
+        __missing_log_warning(state)
+        __close_suspend(sessions, state, matches)
+    __start_suspend(sessions, state, matches)
+    if sessions['active'] is None:
+        __missing_log_warning(state)
+    else:
+        __close_active(sessions, state, matches)
+    return 
+
+def freezing_regex_hook(session, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    if sessions['suspend'] is None:
+        __start_suspend(sessions, state, matches)
+    return
+
+def aborted_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    if sessions['suspend'] is not None:
+        __close_suspend()
+    if sessions['active'] is not None:
+        __missing_log_warning(state)
+        __close_active(sessions, state, matches)
+    __start_active(sessions, state, matches)
+    return
+
+def devicefailed_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def resumed_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def failed_device_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def resume_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def longest_wakelock_regex_hook(sessions, state, matches):
+    pass
+
+def suspend_duration_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def sleep_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def wakeup_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def wakeup_wakelock_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def suspended_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def charging_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+    return
+
+def discharging_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+
+    pass
+
+def __close_sessions(sessions, state):
+    
+    return
 
 def roll(fobj_in, fobj_out):
     cur_state = __init_cur()
@@ -813,24 +1048,31 @@ def roll(fobj_in, fobj_out):
     live_sessions['charge'] = None
     live_sessions['active'] = None
     live_sessions['suspend'] = None
+    live_sessions['wakeup'] = None
 
     l = fobj_in.readline()
     while (len(l)):
         t,b = time_and_body(l)
         if t is not None:
+            cur_state['kernel_time_stamp'] = t
             if not live_sessions['full']:
-                live_sessions['full'] = Session(start=t)
+                live_sessions['full'] = FullLogSession(
+                    start=t,
+                    start_time=__current_time(cur_state))
             for k in REGEX.keys():
-                r = REGEX[k]
+                r,f = REGEX[k]
                 m = r.match(l)
                 if m is not None:
-                    if '%s_regex_hook'%k in globals().keys():
-                        hook = globals()['%s_regex_hook'%k]
+                    if f in globals().keys():
+                        hook = globals()[f]
                         hook(live_sessions, cur_state, m)
     # close all live sessions
-    for e in live_sessions.values():
-        if e:
-            e.finish(cur_state)
+    __close_sessions(sessions, cur_state)
+    live_sessions['full'].end = cur_state['kernel_time_stamp']
+    live_sessions['full'].end_time = __current_time(cur_state)
+    live_sessions['full'].duration =\
+        live_sessions['full'].end_time -\
+        live_sessions['full'].start_time
     return live_sessions['full'], live_sessions['discharge']
 
 def run(fobj_in, fobj_out):
@@ -1116,7 +1358,8 @@ if __name__ == "__main__":
             fobj_in.close()
         sys.exit(1)
 
-    f,s = run(fobj_in, fobj_out)
+#    f,s = run(fobj_in, fobj_out)
+    f,s = roll(fobj_in, fobj_out)
     print_summary(f,s)
 
 #    fobj_out.close()
