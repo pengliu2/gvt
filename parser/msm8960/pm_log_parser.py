@@ -33,32 +33,12 @@ def __current_time(c):
 
 def __duration(s):
     return s.end_time - s.start_time
-#def __init_top(v):
-#    t = list()
-#    for i in range(TOP):
-#        t.append(v)
-#    return t
-#
-#def __place_value(k, v, t):
-#    i = 0
-#    while (i < TOP):
-#        t1,t2 = t[i]
-#        if v > t2:
-#            break
-#        i += 1
-#    if i < TOP:
-#        t.insert(i, (k,v))
-#    return t[0:TOP]
-#    
-#
-#def __find_top(d, t1, t2, t3):
-#    for k in d.keys():
-#        v1,v2,v3 = d[k]
-#        __place_value(k,v1,t1)
-#        __place_value(k,v2,t2)
-#        __place_value(k,v3,t3)
+
+def __add_onto_elem_in_dict(d, k, number=0, duration=0, cost=0):
+    if k not in d.keys():
+        d[k] = Sum(k)
+    d[k].update(number, duration, cost)
 ################################################################################
-# Not used yet
 TOP = 5
 class Sum(object):
     def __init__(self, name='', duration=0.0, cost=0.0, count=0):
@@ -147,6 +127,16 @@ class FullLogSession(Session):
     def __init__(self):
         super(FullLogSession, self).__init__()
         self.discharge_sessions = list()
+        self.tops = dict()
+
+        self.tops['cost_displayon'] = Top('cost')
+        self.tops['duration_displayon'] = Top('duration')
+
+        self.tops['cost_active'] = Top('cost')
+        self.tops['duration_active'] = Top('duration')
+
+        self.tops['cost_awoken'] = Top('cost')
+        self.tops['duration_awoken'] = Top('duration')
 
 class AwokenSum(Sum):
     def __init__(self):
@@ -167,15 +157,6 @@ class AwokenSum(Sum):
 
         self.blocker_stats = dict()
         self.unknown_stats = dict()
-
-        self.top_cost_displayon = Top('cost')
-        self.top_duration_displayon = Top('duration')
-
-        self.top_cost_active = Top('cost')
-        self.top_duration_active = Top('duration')
-
-        self.top_cost_awoken = Top('cost')
-        self.top_duration_awoken = Top('duration')
 
 class DischargeSession(Session):
     def __init__(self):
@@ -207,8 +188,10 @@ def __init_cur():
     cur_state['activated_time'] = -1.0
     cur_state['activated_ts'] = UNKNOWN
     # This is for tne nearest resume
-    cur_state['active_reason'] = UNKNOWN
-    cur_state['active_type'] = UNKNOWN
+    cur_state['active_wakelock'] = UNKNOWN
+    cur_state['failed_device'] = UNKNOWN
+    cur_state['wakeup_wakelock'] = UNKNOWN
+    cur_state['active_type'] = session_type['UNKNOWN']
 
     cur_state['kernel_time_stamp'] = ''
     cur_state['discharge_start_time'] = 0.0
@@ -235,559 +218,6 @@ def __init_cur():
 
     return cur_state
 
-################################################################################
-# The Functions to be called when state changes
-def __add_onto_elem_in_dict(d, k, number=0, duration=0, cost=0):
-    if k not in d.keys():
-        d[k] = Sum(k)
-    d[k].update(number, duration, cost)
-
-def __close_latest_displayon(c,s):
-    time = c['sleep_time'] - c['wakeup_time']
-    cost = c['sleep_coulomb'] - c['wakeup_coulomb']
-    if cost < 0:
-        cost = 0
-        __error_print('cost < 0 at %s (%d - %d)'%\
-                          (c['kernel_time_stamp'],
-                           c['activated_coulomb'],
-                           c['susp_kicked_coulomb']
-                           )
-                      )
-        cost = float(cost)/1000
-        session = Session(c['wakeup_ts'], c['sleep_ts'], time, cost)
-        s.awoken_sum.displayon_sum.add(time, cost)
-        s.awoken_sum.top_cost_displayon.insert(session)
-        s.awoken_sum.top_duration_displayon.insert(session)
-def __susp_kicked_enter_hook(c,s):
-    if c['suspend_result'] == suspend_result['DISPLAY']:
-        __close_latest_displayon(c,s)
-    # counter value yet
-    c['susp_kicked_time'] = __current_time(c)
-    c['susp_kicked_ts'] = c['kernel_time_stamp']
-    c['susp_kicked_coulomb'] = sys.maxint
-    c['longest_wakelock_name'] = UNKNOWN
-    c['longest_wakelock_len'] = 0.0
-    c['failed_device'] = UNKNOWN
-    c['active_wakelock'] = UNKNOWN
-    c['last_active_reason'] = c['active_reason']
-    c['active_reason'] = UNKNOWN
-    return 
-
-def __susp_kicked_leave_hook(c,s):
-    # Last active session can be summarized here
-    time = c['susp_kicked_time'] - c['activated_time']
-    cost = c['susp_kicked_coulomb'] - c['activated_coulomb']
-    if cost < 0:
-        cost = 0
-        __error_print('cost < 0 at %s (%d - %d)'%\
-                          (c['kernel_time_stamp'],
-                           c['susp_kicked_coulomb'],
-                           c['activated_coulomb']
-                           ))
-    cost = float(cost)/1000
-    session = Session(c['activated_ts'], c['susp_kicked_ts'], time, cost)
-    if c['longest_wakelock_name'] != UNKNOWN:
-        __add_onto_elem_in_dict(
-            s.awoken_sum.blocker_stats,
-            c['longest_wakelock_name'],
-            1, c['longest_wakelock_len'], cost
-            )
-    s.awoken_sum.top_duration_active.insert(session)
-    s.awoken_sum.top_cost_active.insert(session)
-
-    r = UNKNOWN
-    d = None
-    a = None
-    if c['suspend_result'] == suspend_result['SUCCESS']:
-        d = s.awoken_sum.active_stats['WAKEUP']
-    elif c['suspend_result'] == suspend_result['DEVICE']:
-        d = s.awoken_sum.active_stats['DEVICE']
-    elif c['suspend_result'] == suspend_result['ABORTED']:
-        d = s.awoken_sum.active_state['ABORT']
-    elif c['suspend_result'] == suspend_result['DISPLAY']:
-        s.awoken_sum.displayoff_sum.add(time, cost)
-        return
-    else:
-        d = s.awoken_sum.unknown_stats
-    
-    __add_onto_elem_in_dict(
-        d,
-        c['last_active_reason'],
-        1, time, cost
-        )
-    c['last_active_reason'] = UNKNOWN
-    return
-
-def __susp_aborted_enter_hook(c,s):
-    c['suspend_result'] = suspend_result['ABORTED']
-    c['activated_coulomb'] = c['susp_kicked_coulomb']
-    c['susp_kicked_coulomb'] = sys.maxint
-    return
-def __susp_aborted_leave_hook(c,s):
-    return
-
-def __device_failed_enter_hook(c,s):
-    c['suspend_result'] = suspend_result['DEVICE']
-    c['activated_coulomb'] = c['susp_kicked_coulomb']
-    c['susp_kicked_coulomb'] = sys.maxint
-    return
-def __device_failed_leave_hook(c,s):
-    return
-
-def __suspended_enter_hook(c,s):
-    # last wakeup session can be summarized here
-    c['suspend_result'] = suspend_result['SUCCESS']
-    time = c['susp_kicked_time'] - c['resume_time']
-    cost = c['susp_kicked_coulomb'] - c['resume_coulomb']
-    if cost < 0:
-        cost = 0
-        __error_print('cost < 0 at %s (%d - %d)'%\
-                          (c['kernel_time_stamp'],
-                           c['susp_kicked_coulomb'],
-                           c['resume_coulomb']
-                           ))
-    cost = float(cost)/1000
-    s.awoken_sum.duration += time
-    s.awoken_sum.cost += cost
-    session = Session(c['resume_ts'], c['susp_kicked_ts'], time, cost)
-    s.awoken_sum.top_cost_awoken.insert(session)
-    s.awoken_sum.top_duration_awoken.insert(session)
-    c['active_reason'] = UNKNOWN
-    c['resume_coulomb'] = sys.maxint
-    c['suspend_duration'] = 0.0
-    return
-def __suspended_leave_hook(c,s):
-    c['gptimer_stop_time'] += c['suspend_duration']
-    time = c['activated_time'] - c['susp_kicked_time'] + c['suspend_duration']
-    cost = c['activated_coulomb'] - c['susp_kicked_coulomb']
-    if cost < 0:
-        cost = 0
-        __error_print('cost < 0 at %s (%d - %d)'%\
-                          (c['kernel_time_stamp'],
-                           c['activated_coulomb'],
-                           c['susp_kicked_coulomb']
-                           )
-                      )
-    cost = float(cost)/1000
-    s.suspend_sum.add(time, cost)
-    c['resume_time'] = __current_time(c)
-    c['resume_ts'] = c['kernel_time_stamp']
-    c['resume_coulomb'] = c['activated_coulomb']
-    return
-
-def __resumed_enter_hook(c,s):
-    # this time suspend duration
-    c['activated_time'] = __current_time(c)
-    c['activated_ts'] = c['kernel_time_stamp']
-    c['sleep_coulomb'] = 0.0
-    # TODO: should write into the spreadsheet file as well
-    return
-
-def __resumed_leave_hook(c,s):
-    pass
-
-def __charging_enter_hook(c,s):
-    if c['suspend_result'] == suspend_result['DISPLAY']:
-        __close_latest_displayon(c,s)
-    s.end = c['kernel_time_stamp']
-    c['discharging_end_time'] = __current_time(c)
-    s.duration = __current_time(c) - c['discharging_start_time']
-    # Finish awoken_sum
-    # Finish activated session
-    c['sleep_coulomb'] = 0.0
-    c['discharge_start_time'] = -1.0
-    c['discharge_start_ts'] = UNKNOWN
-    c['discharge_end_time'] = 0.0
-    return
-
-def __charging_leave_hook(c,s):
-    s.start = c['kernel_time_stamp']
-    c['discharging_start_time'] = __current_time(c)
-    return
-
-def __displayon_enter_hook(c,s):
-    if c['suspend_result'] == suspend_result['DISPLAY']:
-        __close_latest_displayon(c,s)
-    c['wakeup_ts'] = c['kernel_time_stamp']
-    c['wakeup_time'] = __current_time(c)
-    c['display'] = 'ON'
-    c['wakeup_coulomb'] = sys.maxint
-    return
-
-def __displayon_leave_hook(c,s):
-    # Can close the active session before display turned on
-    time = __current_time(c) - c['wakeup_time']
-    cost = c['wakeup_coulomb'] - c['activated_coulomb']
-    if cost < 0:
-        cost = 0
-        __error_print('cost < 0 at %s (%d - %d)'%\
-                          (c['kernel_time_stamp'],
-                           c['susp_kicked_coulomb'],
-                           c['activated_coulomb']
-                           ))
-    cost = float(cost)/1000
-    session = Session(c['activated_ts'], c['wakeup_ts'], time, cost)
-    s.awoken_sum.top_duration_active.insert(session)
-    s.awoken_sum.top_cost_active.insert(session)
-    r = UNKNOWN
-    d = None
-    a = None
-    if c['suspend_result'] == suspend_result['SUCCESS']:
-        d = s.awoken_sum.resume_stats
-    elif c['suspend_result'] == suspend_result['DEVICE']:
-        d = s.awoken_sum.failure_stats
-    elif c['suspend_result'] == suspend_result['ABORTED']:
-        d = s.awoken_sum.abort_stats
-    elif c['suspend_result'] == suspend_result['DISPLAY']:
-        s.awoken_sum.displayoff_sum.add(time, cost)
-        return
-    else:
-        d = s.awoken_sum.unknown_stats
-    
-    __add_onto_elem_in_dict(
-        d,
-        c['last_active_reason'],
-        1, time, cost
-        )
-    c['last_active_reason'] = UNKNOWN
-    c['active_reason'] = 'DISPLAY'
-
-    c['sleep_time'] = __current_time(c)
-    c['sleep_ts'] = c['kernel_time_stamp']
-    c['active_time'] = __current_time(c)
-    c['active_ts'] = c['kernel_time_stamp']
-    c['suspend_result'] = suspend_result['DISPLAY']
-    c['display'] = 'OFF'
-    return
-
-# The Functions to be called when state changes
-################################################################################
-
-################################################################################
-# Regular Expressions and Their Handlers
-NEXT_STATE = {
-    'preparing': 'SUSP_KICKED',
-    'aborted1': 'SUSP_ABORTED',
-    'aborted2': 'SUSP_ABORTED',
-    'aborted3': 'SUSP_ABORTED',
-    'devicefailed': 'DEVICE_FAILED',
-    'suspended': 'SUSPENDED',
-    'booting': 'RESUMED',
-    'resumed': 'RESUMED',
-    'sleep': 'RESUMED',
-    'wakeup': 'DISPLAYON',
-    'charging': 'CHARGING',
-    }
-ACTIVITIES = {
-    'preparing': re.compile('PM: Preparing system for mem sleep'),
-    'aborted1': re.compile('Freezing of tasks  aborted'),
-    'aborted2': re.compile('Freezing of user space  aborted'),
-    'aborted3': re.compile('suspend aborted....'),
-    'devicefailed': re.compile('PM: Some devices failed to [(suspend)|(power down)]'),
-    'suspended': re.compile('msm_pm_enter: power collapse'),
-    'booting': re.compile('Booting Linux'),
-    'resumed': re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
-    'sleep': re.compile('request_suspend_state: sleep (0->3)'),
-    'wakeup': re.compile('request_suspend_state: wakeup (3->0)'),
-    'charging': re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
-    'discharging': re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
-    }
-def common_activity_hook(c,m,s,k):
-    next = NEXT_STATE[k]
-    if c['state'] == next:
-        return None
-    __state_leave_hook(c,s)
-    c['state'] = next
-    __state_enter_hook(c,s)
-    return c['state']
-
-def booting_activity_hook(c,m,s,k):
-    """
-    inputs are current system state
-    and matched module gotten from REs['booting']
-    and the summary structure
-    and the first part of this function name
-    """
-    __state_leave_hook(c,s)
-    c['active_reason'] = 'bootup'
-    c['suspend_result'] = suspend_result['BOOTUP']
-    c['resume_coulomb'] = 0
-    c['resume_time'] = 0.0
-    c['resume_ts'] = '0.0'
-    c['activated_coulomb'] = 0
-    c['activated_time'] = 0
-    c['state'] = k
-    c['display'] = 'OFF'
-    c['charging'] = 'OFF'
-    c['discharge_start_time'] = 0.0
-    c['discharge_start_ts'] = '0.0'
-    c['state'] = NEXT_STATE[k]
-    __state_enter_hook(c,s)
-    return c['state']
-
-def sleep_activity_hook(c,m,s,k):
-    c['display'] = 'OFF'
-    if c['state'] == 'RESUMED' or c['state'] == 'CHARGING':
-        return c['state']
-    __state_leave_hook(c,s)
-    c['state'] = 'RESUMED'
-    __state_enter_hook(c,s)
-    return c['state']
-
-def wakeup_activity_hook(c,m,s,k):
-    c['display'] = 'ON'
-    if c['state'] == 'DISPLAYON' or c['state'] == 'CHARGING':
-        return c['state']
-    __state_leave_hook(c,s)
-    c['state'] = 'DISPLAYON'
-    __state_enter_hook(c,s)
-    return c['state']
-
-def charging_activity_hook(c,m,s,k):
-    if c['state'] == 'CHARGING':
-        return c['state']
-    __state_leave_hook(c,s)
-    c['state'] = 'CHARGING'
-    __state_enter_hook(c,s)
-    return c['state']
-
-def discharging_activity_hook(c,m,s,k):
-    if c['state'] != 'CHARGING':
-        return c['state']
-    if c['display'] == 'ON':
-        next = 'DISPLAYON'
-    else:
-        next = 'RESUMED'
-    __state_leave_hook(c,s)
-    c['state'] = next
-    __state_enter_hook(c,s)
-    return next
-
-DATA = {
-    'susp_kicked_coulomb': (re.compile('pm_debug: suspend uah=(-{0,1}\d+)')),
-    'resume_coulomb': (re.compile('pm_debug: resume uah=(-{0,1}\d+)')),
-    'active_wakelock': (re.compile('active wake lock ([^, ]+),*')),
-    'longest_wakelock': (re.compile('longest wake lock: \[([^\]]+)\]\[(\d+)\]')),
-    'wakeup_wakelock': (re.compile('wakeup wake lock: (\w+)')),
-    'suspend_duration': (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)')),
-    'failed_device': (re.compile('PM: Device ([^ ]+) failed to suspend')),
-    'sleep_coulomb': (re.compile('pm_debug: sleep uah=(-{0,1}\d+)')),
-    'wakeup_coulomb': (re.compile('pm__debug: wakeup uah=(-{0,1}\d+)')),
-    }
-def susp_kicked_coulomb_data_hook(c,m):
-    w = m.groups()[0]
-    c['susp_kicked_coulomb'] = int(w)
-    return
-
-def resume_coulomb_data_hook(c,m):
-    w = m.groups()[0]
-    c['activated_coulomb'] = int(w)
-    c['resume_coulomb'] = int(w)
-    return
-
-def active_wakelock_data_hook(c,m):
-    """
-    inputs are current system state
-    and matched module gotten from REs['active_wakelock']
-    and the summary structure
-    and the first part of this function name
-    """
-    c['active_reason'] = m.groups()[0]
-    return
-
-def longest_wakelock_data_hook(c,m):
-    """
-    inputs are current system state
-    and matched module gotten from REs['longest_wakelock']
-    and the summary structure
-    and the first part of this function name
-    """
-    c['longest_wakelock_name'] = m.groups()[0]
-    c['longest_wakelock_len'] = float(m.groups()[1])
-    return
-
-def wakeup_wakelock_data_hook(c,m):
-    """
-    inputs are current system state
-    and matched module gotten from REs['wakeup_wakelock']
-    and the summary structure
-    and the first part of this function name
-    """
-    w = m.groups()[0]
-    c['active_reason'] = w
-    return
-
-def suspend_duration_data_hook(c,m):
-    """
-    inputs are current system state
-    and matched module gotten from REs['suspend_duration']
-    and the summary structure
-    and the first part of this function name
-    """
-    w = m.groups()[0]
-    c['suspend_duration'] = float(w)/TIME_UNIT
-    return
-
-def failed_device_data_hook(c,m):
-    """
-    inputs are current system state
-    and matched module gotten from REs['failed_device']
-    and the summary structure
-    and the first part of this function name
-    """
-    d = m.groups()[0]
-    c['active_reason'] = d
-    return
-
-def sleep_coulomb_data_hook(c,m):
-    w = m.groups()[0]
-    c['sleep_coulomb'] = int(w)
-    c['activated_coulomb'] = int(w)
-    c['display'] = 'OFF'
-    return
-
-def wakeup_coulomb_data_hook(c,m):
-    w = m.groups()[0]
-    c['wakeup_coulomb'] = int(w)
-    c['display'] = 'ON'
-    return
-
-# Regular Expressions and Their Handlers End
-################################################################################
-
-################################################################################
-def __state_enter_hook(c,s):
-    x_name = string.lower("__%s_enter_hook"%c['state'])
-    if x_name in globals().keys():
-        x = globals()[x_name]
-        x(c,s)
-
-def __state_leave_hook(c,s):
-    x_name = string.lower("__%s_leave_hook"%c['state'])
-    if x_name in globals().keys():
-        x = globals()[x_name]
-        x(c,s)
-
-# State Machine Section Starts
-NEXT_ACTIVITY = {
-    'SUSP_KICKED':
-        ['devicefailed',
-         'suspended',
-         'aborted1',
-         'aborted2',
-         'aborted3',
-         ],
-    'DEVICE_FAILED':
-        ['resumed',
-         ],
-    'SUSPENDED':
-        ['wakeup',
-         'resumed',
-         ],
-    'SUSP_ABORTED':
-        ['resumed'
-         ],
-    'RESUMED':
-        ['preparing',
-         'charging',
-         'wakeup',
-         'resumed',
-         'discharging',
-         ],
-    'UNKNOWN':
-        ['booting',
-         'resumed',
-         'preparing',
-         'devicefailed',
-         'suspended',
-         'aborted1',
-         'aborted2',
-         'aborted3',
-         'sleep',
-         'wakeup',
-         'charging',
-         'discharging',
-         ],
-    'CHARGING':
-        ['discharging',
-         ],
-    'DISPLAYON':
-        ['charging',
-         'sleep'
-         ],
-    }
-COLLECTING_DATA = {
-    'SUSP_KICKED':
-        ['susp_kicked_coulomb',
-         'longest_wakelock',
-         'failed_device',
-         'active_wakelock',
-         ],
-    'SUSP_ABORTED':
-        ['active_wakelock',
-         'resume_coulomb',
-         ],
-    'DEVICE_FAILED':
-        ['resume_coulomb',
-         ],
-    'SUSPENDED':
-        ['wakeup_wakelock',
-         'resume_coulomb',
-         'suspend_duration',
-         ],
-    'RESUMED':
-        ['sleep_coulomb',
-        ],
-    'CHARGING':
-        [
-         ],
-    'DISPLAYON':
-        ['wakeup_coulomb',
-         ],
-    'UNKNOWN':
-        ['susp_kicked_coulomb',
-         'resume_coulomb',
-         'active_wakelock',
-         'longest_wakelock',
-         'wakeup_wakelock',
-         'suspend_duration',
-         'failed_device',
-         'sleep_coulomb',
-         'wakeup_coulomb',
-         ],
-    }
-
-def __match_activity(log):
-    """
-    Return a pair. The first value is matched regex. 
-    The third one is matched result.
-    """
-    key = None
-    matched = None
-    for k in ACTIVITIES.keys():
-        r = ACTIVITIES[k]
-        m = r.match(log)
-        if m is not None:
-            matched = m
-            key = k
-            break
-    return key,matched
-
-def __collect_data(c, log):
-    data = None
-    matched = None
-    state = c['state']
-    for k in COLLECTING_DATA[state]:
-        r = DATA[k]
-        m = r.match(log)
-        if m is not None:
-            data = k
-            matched = m
-            break;
-    return data,matched
-
-# State Machine Section Ends
-################################################################################
 ################################################################################
 # Log Processing Section Starts
 KERNEL_TIME_LIMIT = 131072.0
@@ -841,7 +271,7 @@ REGEX = {
         (re.compile('request_suspend_state: wakeup (3->0)'),
          'wakeup_regex_hook'),
     'wakeup_wakelock':
-         # This is the first possible indicator for resume from successful suspend. Here wakeup session can be opened, but suspend not closed yet
+         # This is the first possible indicator for resume from successful suspend. Here wakeup session must be opened, but suspend not closed yet
         (re.compile('wakeup wake lock: (\w+)'),
          'wakeup_wakelock_regex_hook'),
     # Motorola debug info
@@ -864,6 +294,12 @@ REGEX = {
         (re.compile('pm_debug: wakeup uah=(-{0,1}\d+)'),
          'wakeup_coulomb_regex_hook'),
     # MSM
+    'displayon': # last display-off active session can be closed here if there's any
+        (re.compile('panel_enable is called'),
+         'displayon_regex_hook'),
+    'displayoff': # last display-on active session can be closed here
+        (re.compile('panel_disable is called'),
+         'displayoff_regex_hook'),
     'charging':
         (re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
          'charging_regex_hook'),
@@ -871,19 +307,37 @@ REGEX = {
         # Last charge session can be close
         (re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
          'discharging_regex_hook'),
-    'displayon': # last display-off active session can be closed here if there's any
-        (re.compile('panel_enable is called'),
-         'displayon_regex_hook'),
-    'displayoff': # last display-on active session can be closed here
-        (re.compile('panel_disable is called'),
-         'displayoff_regex_hook'),
     }
 
 def __missing_log_warning(c):
     __error_print('There might be log missing before %s'%c['kernel_time_stamp'])
     return
 
-def _start_suspend(session, state, matches):
+def __missing_discharge(sessions, state, matches = None):
+    __missing_log_warning(state)
+    sessions['discharge'] = Session(
+        start = sessions['full'].start,
+        start_time = sessions['full'].start_time
+        )
+    return
+
+def __missing_wakeup(sessions, state, matches = None):
+    __missing_log_warning(state)
+    sessions['wakeup'] = Session(
+        start = sessions['full'].start,
+        start_time = sessions['full'].start_time
+        )
+    return
+
+def __missing_suspend(sessions, state, matches = None):
+    __missing_log_warning(state)
+    sessions['suspend'] = Session(
+        start = sessions['full'].start,
+        start_time = sessions['full'].start_time
+        )
+    return
+
+def __start_suspend(sessions, state, matches = None):
     if sessions['suspend'] is None:
         sessions['suspend'] = Session(
             start=state['kernel_time_stamp'],
@@ -891,7 +345,7 @@ def _start_suspend(session, state, matches):
             )
     return
 
-def __close_suspend(sessions, state, matches):
+def __close_suspend(sessions, state, matches = None):
     if sessions['suspend'] is not None:
         s = sessions['suspend']
         s.end = state['kernel_time_stamp']
@@ -900,7 +354,7 @@ def __close_suspend(sessions, state, matches):
         s.suspend_sum.add(s.duration, s.cost)
     return
 
-def __start_active(session, state, matches):
+def __start_active(sessions, state, matches = None):
     if sessions['active'] is None:
         sessions['active'] = Session(
             start=state['kernel_time_stamp'],
@@ -910,7 +364,7 @@ def __start_active(session, state, matches):
             )
     return
 
-def __close_active(session, state, matches):
+def __close_active(sessions, state, matches = None):
     if sessions['active'] is not None:
         s = sessions['active']
         s.end = state['kernel_time_stamp']
@@ -928,7 +382,7 @@ def __close_active(session, state, matches):
         sessions['active'] = None
     return
 
-def __start_charge(session, state, matches):
+def __start_charge(sessions, state, matches = None):
     if sessions['charge'] is None:
         sessions['charge'] = Session(
             start = state['kernel_time_stamp'],
@@ -936,7 +390,7 @@ def __start_charge(session, state, matches):
             )
     return
 
-def __start_discharge(session, state, matches):
+def __start_discharge(sessions, state, matches = None):
     if sessions['discharge'] is None:
         sessions['discharge'] = Session(
             start = state['kernel_time_stamp'],
@@ -944,7 +398,7 @@ def __start_discharge(session, state, matches):
             )
     return
 
-def __close_discharge(session, state, matches):
+def __close_discharge(sessions, state, matches = None):
     if sessions['discharge'] is not None:
         s = sessions['discharge']
         s.end = state['kernel_time_stamp']
@@ -953,13 +407,19 @@ def __close_discharge(session, state, matches):
         sessions['full'].discharge_sessions.append(s)
         sessions['discharge'] = None
 
-def __start_wakeup(session, state, matches):
+def __start_wakeup(sessions, state, matches = None):
     if sessions['wakeup'] is None:
         sessions['wakeup'] = Session(
             start = state['kernel_time_stamp'],
             start_time = __current_time(state),
             reason = matches.groups()[0]
             )
+    return
+
+def __start_displayon(sessions, state, matches = None):
+    return
+
+def __start_displayoff(sessions, state, matches = None):
     return
 
 def booting_regex_hook(sessions, state, matches):
@@ -971,21 +431,18 @@ def booting_regex_hook(sessions, state, matches):
 def freezing_regex_hook(session, state, matches):
     # If last active session hasn't been closed, close it here
     if sessions['charge'] is not None or sessions['discharge'] is None:
-        __missing_log_warning(state)
         __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
-    if sessions['suspend'] is None:
-        __start_suspend(sessions, state, matches)
-        if sessions['active'] is not None:
-            __close_active(sessions, state, matches)
-        else:
-            __missing_log_warning(state)
+        __missing_discharge(sessions, state, matches)
     if sessions['wakeup'] is None:
+        __missing_wakeup(sessions, state, matches)
+    if sessions['active'] is not None:
+        __close_active(sessions, state, matches)
+    else:
         __missing_log_warning(state)
-        __start_wakeup(sessions, state, matches)
     return
 
 def aborted_regex_hook(sessions, state, matches):
+    # Don't have to check other sessions because this line has been processed by freezing_regex_hook
     # Starts next active
     __start_active(sessions, state, matches)
     return
@@ -993,89 +450,72 @@ def aborted_regex_hook(sessions, state, matches):
 def failed_device_regex_hook(sessions, state, matches):
     # Starts next active
     if sessions['charge'] is not None or sessions['discharge'] is None:
-        __missing_log_warning(state)
         __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
-    if sessions['suspend'] is None:
-        __start_suspend(sessions, state, matches)
-        if sessions['active'] is not None:
-            __close_active(sessions, state, matches)
-        else:
-            __missing_log_warning(state)
+        __missing_discharge(sessions, state, matches)
     if sessions['wakeup'] is None:
+        __missing_wakeup(sessions, state, matches)
+    if sessions['active'] is not None:
         __missing_log_warning(state)
-        __start_wakeup(sessions, state, matches)
-
-    __start_active(sessions, state, matches)
-
+        __close_active(sessions, state, matches)
+    __start_active(sessions, state, matches)        
     return
 
 def resumed_regex_hook(sessions, state, matches):
     # Last suspend session can be closed here
-    __close_suspend(session, state, matches)
+    if sessions['charge'] is not None or sessions['discharge'] is None:
+        __close_charge(sessions, state, matches)
+        __missing_discharge(sessions, state, matches)
+    if sessions['suspend'] is not None:
+        __close_suspend(session, state, matches)
+    else:
+        __missing_log_warning(state)
+    return
 
 def active_wakelock_regex_hook(sessions, state, matches):
+    state['active_wakelock'] = matches.groups()[0]
+    return
 
 def sleep_regex_hook(sessions, state, matches):
-    __start_active(sessions, state, matches)
+    state['display'] = 'OFF'
+    if sessions['discharge']:
+        __start_displayoff(sessions, state, matches)
+    return
 
 def wakeup_regex_hook(sessions, state, matches):
-    __start_displayon(sessions, state, matches)
+    state['display'] = 'ON'
+    if sessions['discharge']:
+        __start_displayon(sessions, state, matches)
+    return
 
 def wakeup_wakelock_regex_hook(sessions, state, matches):
     # A new wakeup can be started here
     # Suspend not closed yet because we don't know cost
     if sessions['charge'] is not None or sessions['discharge'] is None:
-        __missing_log_warning(state)
         __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
-    if sessions['suspend'] is not None:
-        if sessions['active'] is not None:
-            __missing_log_warning(state)
-            __close_active(sessions, state, matches)
-    if sessions['wakeup'] is None:
+        __missing_discharge(sessions, state, matches)
+    if sessions['wakeup'] is not None:
+        __missing_log_warning(state)
+        sessions['wakeup'] = None
+    else:
         __start_wakeup(sessions, state, matches)
     return
-
-def longest_wakelock_regex_hook(sessions, state, matches):
-    pass
-
-def suspend_duration_regex_hook(sessions, state, matches):
-    if sessions['charge'] is not None:
-        __missing_log_warning(state)
-        __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
-
-def sleep_coulomb_regex_hook(sessions, state, matches):
-    if sessions['charge'] is not None:
-        __missing_log_warning(state)
-        __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
-
-
-def wakeup_coulomb_regex_hook(sessions, state, matches):
-    if sessions['charge'] is not None:
-        __missing_log_warning(state)
-        __close_charge(sessions, state, matches)
-        __start_discharge(sessions, state, matches)
 
 def susp_coulomb_regex_hook(sessions, state, matches):
     # This is the first possible indicator for suspend start, but not in user build
     # Here we can close last active session
-    if sessions['discharge'] is None:
+    if sessions['charge'] is not None or sessions['discharge'] is None:
+        __close_charge(sessions, state, matches)
+        __missing_discharge(sessions, state, matches)
+    if sessions['suspend'] is not None:
         __missing_log_warning(state)
-        __start_discharge_from_beginning(sessions, state, matches)
-    if sessions['suspend'] is None:
-        __start_suspend(sessions, state, matches)
-    else:
-        __missing_log_warning(state)
+        sessions['suspend'] = None
+    __start_suspend(sessions, state, matches)
+    if sessions['wakeup'] is None:
+        __missing_wakeup(sessions, state, matches)
     if sessions['active'] is None:
         __missing_log_warning(state)
     else:
         __close_active(sessions, state, matches)
-    if sessions['wakeup'] is None:
-        __missing_log_warning(state)
-        __start_wakeup_from_beginning(sessions, state, matches)
     return 
 
 def resume_coulomb_regex_hook(sessions, state, matches):
@@ -1083,42 +523,48 @@ def resume_coulomb_regex_hook(sessions, state, matches):
         __missing_log_warning(state)
         __close_charge(sessions, state, matches)
         __start_discharge(sessions, state, matches)
+    return
 
-    pass
+def longest_wakelock_regex_hook(sessions, state, matches):
+    return
+
+def suspend_duration_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    return
+
+def sleep_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    return
+
+
+def wakeup_coulomb_regex_hook(sessions, state, matches):
+    if sessions['charge'] is not None:
+        __missing_log_warning(state)
+        __close_charge(sessions, state, matches)
+        __start_discharge(sessions, state, matches)
+    return
+
+def displayon_regex_hook(sessions, state, matches):
+    return
+
+def displayoff_regex_hook(sessions, state, matches):
+    return
 
 def __close_sessions(sessions, state):
-    if sessions['wakeup']:
-        __error_print(
-            'The last part of the log shows the phone was in ACTIVE mode,'+
-            'so the total cost of active mode might not be accurate')
-        # Adds last wakeup duration EXCEPT the last active period to sum
-
-        # Adds last wakeup cost to sum
-
-        # Adds last wakeup to top expensive wakeup sessions
-
-        sessions['wakeup'].end = state['kernel_time_stamp']
-        sessions['wakeup'].end_time = __current_time(state)
-        sessions['wakeup'].duration = __duration(sessions['wakeup'])
-
-        # Adds last wakeup to top longest wakeup sessions
-
-        if sessions['active']:
-            sessions['active'].end = state['kernel_time_stamp']
-            sessions['active'].end_time = __current_time(state)
-            sessions['active'].duration = __duration(sessions['active'])
-            # Adds last active session to top longest active sessions
-
-            # Adds last active session to categorized Sum
-
-    if sessions['suspend']:
-        __error_print(
-            'The last part of the log shows the phone was in SUSPEND mode,'+
-            'so the total cost of suspend mode might not be accurate')
     if sessions['discharge']:
-        sessions['discharge'].end = state['kernel_time_stamp']
-        sessions['discharge'].end_time = __current_time(state)
-        sessions['discharge'].duration = __duration(sessions['discharging'])
+        __close_discharge(sessions, state)
+    if sessions['wakeup']:
+        __close_wakeup(sessions, state)
+    if sessions['suspend']:
+        __close_suspend(sessions, state)
+    if sessions['active']:
+        __close_active(sessions, state)
     return
 
 def charging_regex_hook(sessions, state, matches):
@@ -1412,6 +858,10 @@ if __name__ == "__main__":
 # Main Sections Ends
 ################################################################################
 
+
+
+
+
 def run(fobj_in, fobj_out):
     """ """
     # All stats dict values have following format:
@@ -1459,3 +909,576 @@ def run(fobj_in, fobj_out):
     charging_activity_hook(cur_state, None, disch, None)
     full.discharge_sessions.append(disch)
     return full,disch
+#def __init_top(v):
+#    t = list()
+#    for i in range(TOP):
+#        t.append(v)
+#    return t
+#
+#def __place_value(k, v, t):
+#    i = 0
+#    while (i < TOP):
+#        t1,t2 = t[i]
+#        if v > t2:
+#            break
+#        i += 1
+#    if i < TOP:
+#        t.insert(i, (k,v))
+#    return t[0:TOP]
+#    
+#
+#def __find_top(d, t1, t2, t3):
+#    for k in d.keys():
+#        v1,v2,v3 = d[k]
+#        __place_value(k,v1,t1)
+#        __place_value(k,v2,t2)
+#        __place_value(k,v3,t3)
+################################################################################
+# The Functions to be called when state changes
+def __close_latest_displayon(c,s):
+    time = c['sleep_time'] - c['wakeup_time']
+    cost = c['sleep_coulomb'] - c['wakeup_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['activated_coulomb'],
+                           c['susp_kicked_coulomb']
+                           )
+                      )
+        cost = float(cost)/1000
+        session = Session(c['wakeup_ts'], c['sleep_ts'], time, cost)
+        s.awoken_sum.displayon_sum.add(time, cost)
+        s.awoken_sum.top_cost_displayon.insert(session)
+        s.awoken_sum.top_duration_displayon.insert(session)
+def __susp_kicked_enter_hook(c,s):
+    if c['suspend_result'] == suspend_result['DISPLAY']:
+        __close_latest_displayon(c,s)
+    # counter value yet
+    c['susp_kicked_time'] = __current_time(c)
+    c['susp_kicked_ts'] = c['kernel_time_stamp']
+    c['susp_kicked_coulomb'] = sys.maxint
+    c['longest_wakelock_name'] = UNKNOWN
+    c['longest_wakelock_len'] = 0.0
+    c['failed_device'] = UNKNOWN
+    c['active_wakelock'] = UNKNOWN
+    c['last_active_reason'] = c['active_reason']
+    c['active_reason'] = UNKNOWN
+    return 
+
+def __susp_kicked_leave_hook(c,s):
+    # Last active session can be summarized here
+    time = c['susp_kicked_time'] - c['activated_time']
+    cost = c['susp_kicked_coulomb'] - c['activated_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['susp_kicked_coulomb'],
+                           c['activated_coulomb']
+                           ))
+    cost = float(cost)/1000
+    session = Session(c['activated_ts'], c['susp_kicked_ts'], time, cost)
+    if c['longest_wakelock_name'] != UNKNOWN:
+        __add_onto_elem_in_dict(
+            s.awoken_sum.blocker_stats,
+            c['longest_wakelock_name'],
+            1, c['longest_wakelock_len'], cost
+            )
+    s.awoken_sum.top_duration_active.insert(session)
+    s.awoken_sum.top_cost_active.insert(session)
+
+    r = UNKNOWN
+    d = None
+    a = None
+    if c['suspend_result'] == suspend_result['SUCCESS']:
+        d = s.awoken_sum.active_stats['WAKEUP']
+    elif c['suspend_result'] == suspend_result['DEVICE']:
+        d = s.awoken_sum.active_stats['DEVICE']
+    elif c['suspend_result'] == suspend_result['ABORTED']:
+        d = s.awoken_sum.active_state['ABORT']
+    elif c['suspend_result'] == suspend_result['DISPLAY']:
+        s.awoken_sum.displayoff_sum.add(time, cost)
+        return
+    else:
+        d = s.awoken_sum.unknown_stats
+    
+    __add_onto_elem_in_dict(
+        d,
+        c['last_active_reason'],
+        1, time, cost
+        )
+    c['last_active_reason'] = UNKNOWN
+    return
+
+def __susp_aborted_enter_hook(c,s):
+    c['suspend_result'] = suspend_result['ABORTED']
+    c['activated_coulomb'] = c['susp_kicked_coulomb']
+    c['susp_kicked_coulomb'] = sys.maxint
+    return
+def __susp_aborted_leave_hook(c,s):
+    return
+
+def __device_failed_enter_hook(c,s):
+    c['suspend_result'] = suspend_result['DEVICE']
+    c['activated_coulomb'] = c['susp_kicked_coulomb']
+    c['susp_kicked_coulomb'] = sys.maxint
+    return
+def __device_failed_leave_hook(c,s):
+    return
+
+def __suspended_enter_hook(c,s):
+    # last wakeup session can be summarized here
+    c['suspend_result'] = suspend_result['SUCCESS']
+    time = c['susp_kicked_time'] - c['resume_time']
+    cost = c['susp_kicked_coulomb'] - c['resume_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['susp_kicked_coulomb'],
+                           c['resume_coulomb']
+                           ))
+    cost = float(cost)/1000
+    s.awoken_sum.duration += time
+    s.awoken_sum.cost += cost
+    session = Session(c['resume_ts'], c['susp_kicked_ts'], time, cost)
+    s.awoken_sum.top_cost_awoken.insert(session)
+    s.awoken_sum.top_duration_awoken.insert(session)
+    c['active_reason'] = UNKNOWN
+    c['resume_coulomb'] = sys.maxint
+    c['suspend_duration'] = 0.0
+    return
+def __suspended_leave_hook(c,s):
+    c['gptimer_stop_time'] += c['suspend_duration']
+    time = c['activated_time'] - c['susp_kicked_time'] + c['suspend_duration']
+    cost = c['activated_coulomb'] - c['susp_kicked_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['activated_coulomb'],
+                           c['susp_kicked_coulomb']
+                           )
+                      )
+    cost = float(cost)/1000
+    s.suspend_sum.add(time, cost)
+    c['resume_time'] = __current_time(c)
+    c['resume_ts'] = c['kernel_time_stamp']
+    c['resume_coulomb'] = c['activated_coulomb']
+    return
+
+def __resumed_enter_hook(c,s):
+    # this time suspend duration
+    c['activated_time'] = __current_time(c)
+    c['activated_ts'] = c['kernel_time_stamp']
+    c['sleep_coulomb'] = 0.0
+    # TODO: should write into the spreadsheet file as well
+    return
+
+def __resumed_leave_hook(c,s):
+    pass
+
+def __charging_enter_hook(c,s):
+    if c['suspend_result'] == suspend_result['DISPLAY']:
+        __close_latest_displayon(c,s)
+    s.end = c['kernel_time_stamp']
+    c['discharging_end_time'] = __current_time(c)
+    s.duration = __current_time(c) - c['discharging_start_time']
+    # Finish awoken_sum
+    # Finish activated session
+    c['sleep_coulomb'] = 0.0
+    c['discharge_start_time'] = -1.0
+    c['discharge_start_ts'] = UNKNOWN
+    c['discharge_end_time'] = 0.0
+    return
+
+def __charging_leave_hook(c,s):
+    s.start = c['kernel_time_stamp']
+    c['discharging_start_time'] = __current_time(c)
+    return
+
+def __displayon_enter_hook(c,s):
+    if c['suspend_result'] == suspend_result['DISPLAY']:
+        __close_latest_displayon(c,s)
+    c['wakeup_ts'] = c['kernel_time_stamp']
+    c['wakeup_time'] = __current_time(c)
+    c['display'] = 'ON'
+    c['wakeup_coulomb'] = sys.maxint
+    return
+
+def __displayon_leave_hook(c,s):
+    # Can close the active session before display turned on
+    time = __current_time(c) - c['wakeup_time']
+    cost = c['wakeup_coulomb'] - c['activated_coulomb']
+    if cost < 0:
+        cost = 0
+        __error_print('cost < 0 at %s (%d - %d)'%\
+                          (c['kernel_time_stamp'],
+                           c['susp_kicked_coulomb'],
+                           c['activated_coulomb']
+                           ))
+    cost = float(cost)/1000
+    session = Session(c['activated_ts'], c['wakeup_ts'], time, cost)
+    s.awoken_sum.top_duration_active.insert(session)
+    s.awoken_sum.top_cost_active.insert(session)
+    r = UNKNOWN
+    d = None
+    a = None
+    if c['suspend_result'] == suspend_result['SUCCESS']:
+        d = s.awoken_sum.resume_stats
+    elif c['suspend_result'] == suspend_result['DEVICE']:
+        d = s.awoken_sum.failure_stats
+    elif c['suspend_result'] == suspend_result['ABORTED']:
+        d = s.awoken_sum.abort_stats
+    elif c['suspend_result'] == suspend_result['DISPLAY']:
+        s.awoken_sum.displayoff_sum.add(time, cost)
+        return
+    else:
+        d = s.awoken_sum.unknown_stats
+    
+    __add_onto_elem_in_dict(
+        d,
+        c['last_active_reason'],
+        1, time, cost
+        )
+    c['last_active_reason'] = UNKNOWN
+    c['active_reason'] = 'DISPLAY'
+
+    c['sleep_time'] = __current_time(c)
+    c['sleep_ts'] = c['kernel_time_stamp']
+    c['active_time'] = __current_time(c)
+    c['active_ts'] = c['kernel_time_stamp']
+    c['suspend_result'] = suspend_result['DISPLAY']
+    c['display'] = 'OFF'
+    return
+
+# The Functions to be called when state changes
+################################################################################
+################################################################################
+# Regular Expressions and Their Handlers
+NEXT_STATE = {
+    'preparing': 'SUSP_KICKED',
+    'aborted1': 'SUSP_ABORTED',
+    'aborted2': 'SUSP_ABORTED',
+    'aborted3': 'SUSP_ABORTED',
+    'devicefailed': 'DEVICE_FAILED',
+    'suspended': 'SUSPENDED',
+    'booting': 'RESUMED',
+    'resumed': 'RESUMED',
+    'sleep': 'RESUMED',
+    'wakeup': 'DISPLAYON',
+    'charging': 'CHARGING',
+    }
+ACTIVITIES = {
+    'preparing': re.compile('PM: Preparing system for mem sleep'),
+    'aborted1': re.compile('Freezing of tasks  aborted'),
+    'aborted2': re.compile('Freezing of user space  aborted'),
+    'aborted3': re.compile('suspend aborted....'),
+    'devicefailed': re.compile('PM: Some devices failed to [(suspend)|(power down)]'),
+    'suspended': re.compile('msm_pm_enter: power collapse'),
+    'booting': re.compile('Booting Linux'),
+    'resumed': re.compile('suspend: exit suspend, ret = [^ ]+ \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
+    'sleep': re.compile('request_suspend_state: sleep (0->3)'),
+    'wakeup': re.compile('request_suspend_state: wakeup (3->0)'),
+    'charging': re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
+    'discharging': re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+    }
+
+def common_activity_hook(c,m,s,k):
+    next = NEXT_STATE[k]
+    if c['state'] == next:
+        return None
+    __state_leave_hook(c,s)
+    c['state'] = next
+    __state_enter_hook(c,s)
+    return c['state']
+
+def booting_activity_hook(c,m,s,k):
+    """
+    inputs are current system state
+    and matched module gotten from REs['booting']
+    and the summary structure
+    and the first part of this function name
+    """
+    __state_leave_hook(c,s)
+    c['active_reason'] = 'bootup'
+    c['suspend_result'] = suspend_result['BOOTUP']
+    c['resume_coulomb'] = 0
+    c['resume_time'] = 0.0
+    c['resume_ts'] = '0.0'
+    c['activated_coulomb'] = 0
+    c['activated_time'] = 0
+    c['state'] = k
+    c['display'] = 'OFF'
+    c['charging'] = 'OFF'
+    c['discharge_start_time'] = 0.0
+    c['discharge_start_ts'] = '0.0'
+    c['state'] = NEXT_STATE[k]
+    __state_enter_hook(c,s)
+    return c['state']
+
+def sleep_activity_hook(c,m,s,k):
+    c['display'] = 'OFF'
+    if c['state'] == 'RESUMED' or c['state'] == 'CHARGING':
+        return c['state']
+    __state_leave_hook(c,s)
+    c['state'] = 'RESUMED'
+    __state_enter_hook(c,s)
+    return c['state']
+
+def wakeup_activity_hook(c,m,s,k):
+    c['display'] = 'ON'
+    if c['state'] == 'DISPLAYON' or c['state'] == 'CHARGING':
+        return c['state']
+    __state_leave_hook(c,s)
+    c['state'] = 'DISPLAYON'
+    __state_enter_hook(c,s)
+    return c['state']
+
+def charging_activity_hook(c,m,s,k):
+    if c['state'] == 'CHARGING':
+        return c['state']
+    __state_leave_hook(c,s)
+    c['state'] = 'CHARGING'
+    __state_enter_hook(c,s)
+    return c['state']
+
+def discharging_activity_hook(c,m,s,k):
+    if c['state'] != 'CHARGING':
+        return c['state']
+    if c['display'] == 'ON':
+        next = 'DISPLAYON'
+    else:
+        next = 'RESUMED'
+    __state_leave_hook(c,s)
+    c['state'] = next
+    __state_enter_hook(c,s)
+    return next
+
+DATA = {
+    'susp_kicked_coulomb': (re.compile('pm_debug: suspend uah=(-{0,1}\d+)')),
+    'resume_coulomb': (re.compile('pm_debug: resume uah=(-{0,1}\d+)')),
+    'active_wakelock': (re.compile('active wake lock ([^, ]+),*')),
+    'longest_wakelock': (re.compile('longest wake lock: \[([^\]]+)\]\[(\d+)\]')),
+    'wakeup_wakelock': (re.compile('wakeup wake lock: (\w+)')),
+    'suspend_duration': (re.compile('suspend: e_uah=-{0,1}\d+ time=(\d+)')),
+    'failed_device': (re.compile('PM: Device ([^ ]+) failed to suspend')),
+    'sleep_coulomb': (re.compile('pm_debug: sleep uah=(-{0,1}\d+)')),
+    'wakeup_coulomb': (re.compile('pm__debug: wakeup uah=(-{0,1}\d+)')),
+    }
+def susp_kicked_coulomb_data_hook(c,m):
+    w = m.groups()[0]
+    c['susp_kicked_coulomb'] = int(w)
+    return
+
+def resume_coulomb_data_hook(c,m):
+    w = m.groups()[0]
+    c['activated_coulomb'] = int(w)
+    c['resume_coulomb'] = int(w)
+    return
+
+def active_wakelock_data_hook(c,m):
+    """
+    inputs are current system state
+    and matched module gotten from REs['active_wakelock']
+    and the summary structure
+    and the first part of this function name
+    """
+    c['active_reason'] = m.groups()[0]
+    return
+
+def longest_wakelock_data_hook(c,m):
+    """
+    inputs are current system state
+    and matched module gotten from REs['longest_wakelock']
+    and the summary structure
+    and the first part of this function name
+    """
+    c['longest_wakelock_name'] = m.groups()[0]
+    c['longest_wakelock_len'] = float(m.groups()[1])
+    return
+
+def wakeup_wakelock_data_hook(c,m):
+    """
+    inputs are current system state
+    and matched module gotten from REs['wakeup_wakelock']
+    and the summary structure
+    and the first part of this function name
+    """
+    w = m.groups()[0]
+    c['active_reason'] = w
+    return
+
+def suspend_duration_data_hook(c,m):
+    """
+    inputs are current system state
+    and matched module gotten from REs['suspend_duration']
+    and the summary structure
+    and the first part of this function name
+    """
+    w = m.groups()[0]
+    c['suspend_duration'] = float(w)/TIME_UNIT
+    return
+
+def failed_device_data_hook(c,m):
+    """
+    inputs are current system state
+    and matched module gotten from REs['failed_device']
+    and the summary structure
+    and the first part of this function name
+    """
+    d = m.groups()[0]
+    c['active_reason'] = d
+    return
+
+def sleep_coulomb_data_hook(c,m):
+    w = m.groups()[0]
+    c['sleep_coulomb'] = int(w)
+    c['activated_coulomb'] = int(w)
+    c['display'] = 'OFF'
+    return
+
+def wakeup_coulomb_data_hook(c,m):
+    w = m.groups()[0]
+    c['wakeup_coulomb'] = int(w)
+    c['display'] = 'ON'
+    return
+
+# Regular Expressions and Their Handlers End
+################################################################################
+
+
+################################################################################
+def __state_enter_hook(c,s):
+    x_name = string.lower("__%s_enter_hook"%c['state'])
+    if x_name in globals().keys():
+        x = globals()[x_name]
+        x(c,s)
+
+def __state_leave_hook(c,s):
+    x_name = string.lower("__%s_leave_hook"%c['state'])
+    if x_name in globals().keys():
+        x = globals()[x_name]
+        x(c,s)
+
+# State Machine Section Starts
+NEXT_ACTIVITY = {
+    'SUSP_KICKED':
+        ['devicefailed',
+         'suspended',
+         'aborted1',
+         'aborted2',
+         'aborted3',
+         ],
+    'DEVICE_FAILED':
+        ['resumed',
+         ],
+    'SUSPENDED':
+        ['wakeup',
+         'resumed',
+         ],
+    'SUSP_ABORTED':
+        ['resumed'
+         ],
+    'RESUMED':
+        ['preparing',
+         'charging',
+         'wakeup',
+         'resumed',
+         'discharging',
+         ],
+    'UNKNOWN':
+        ['booting',
+         'resumed',
+         'preparing',
+         'devicefailed',
+         'suspended',
+         'aborted1',
+         'aborted2',
+         'aborted3',
+         'sleep',
+         'wakeup',
+         'charging',
+         'discharging',
+         ],
+    'CHARGING':
+        ['discharging',
+         ],
+    'DISPLAYON':
+        ['charging',
+         'sleep'
+         ],
+    }
+COLLECTING_DATA = {
+    'SUSP_KICKED':
+        ['susp_kicked_coulomb',
+         'longest_wakelock',
+         'failed_device',
+         'active_wakelock',
+         ],
+    'SUSP_ABORTED':
+        ['active_wakelock',
+         'resume_coulomb',
+         ],
+    'DEVICE_FAILED':
+        ['resume_coulomb',
+         ],
+    'SUSPENDED':
+        ['wakeup_wakelock',
+         'resume_coulomb',
+         'suspend_duration',
+         ],
+    'RESUMED':
+        ['sleep_coulomb',
+        ],
+    'CHARGING':
+        [
+         ],
+    'DISPLAYON':
+        ['wakeup_coulomb',
+         ],
+    'UNKNOWN':
+        ['susp_kicked_coulomb',
+         'resume_coulomb',
+         'active_wakelock',
+         'longest_wakelock',
+         'wakeup_wakelock',
+         'suspend_duration',
+         'failed_device',
+         'sleep_coulomb',
+         'wakeup_coulomb',
+         ],
+    }
+
+def __match_activity(log):
+    """
+    Return a pair. The first value is matched regex. 
+    The third one is matched result.
+    """
+    key = None
+    matched = None
+    for k in ACTIVITIES.keys():
+        r = ACTIVITIES[k]
+        m = r.match(log)
+        if m is not None:
+            matched = m
+            key = k
+            break
+    return key,matched
+
+def __collect_data(c, log):
+    data = None
+    matched = None
+    state = c['state']
+    for k in COLLECTING_DATA[state]:
+        r = DATA[k]
+        m = r.match(log)
+        if m is not None:
+            data = k
+            matched = m
+            break;
+    return data,matched
+
+# State Machine Section Ends
+################################################################################
