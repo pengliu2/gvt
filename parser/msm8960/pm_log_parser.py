@@ -282,7 +282,7 @@ REGEX = {
     'booting':
         (re.compile('Booting Linux'),
          'booting_regex_hook'),
-    'freezing': # This might be the first indicator for suspend kicking off if susp_coulomb is not present
+    'freezing': # This might be the first indicator for suspend kicking off if suspend_coulomb is not present
         (re.compile('Freezing of user space processes ...'),
          'freezing_regex_hook'),
     'aborted1':
@@ -314,12 +314,12 @@ REGEX = {
          'wakeup_regex_hook'),
     'wakeup_wakelock':
          # This is the first possible indicator for resume from successful suspend. Here wakeup session must be opened, but suspend not closed yet
-        (re.compile('wakeup wake lock: (\w+)'),
+        (re.compile('wakeup wake lock: ([\w-]+)'),
          'wakeup_wakelock_regex_hook'),
     # Motorola debug info
-    'susp_coulomb': # This is the first possible indicator for suspend, but not in user build. Last active session can be closed.
+    'suspend_coulomb': # This is the first possible indicator for suspend, but not in user build. Last active session can be closed.
         (re.compile('pm_debug: suspend uah=(-{0,1}\d+)'),
-         'susp_coulomb_regex_hook'),
+         'suspend_coulomb_regex_hook'),
     'resume_coulomb': # This might not in user build
         (re.compile('pm_debug: resume uah=(-{0,1}\d+)'),
          'resume_coulomb_regex_hook'),
@@ -353,7 +353,6 @@ def __missing_log_warning(s,c,e):
     __error_print('There might be log missing before %s'%c['kernel_time_stamp'])
     if debug:
         __debug_print_all(s,c)
-        raise
     return
 
 def __missing_discharge(sessions, state, matches = None):
@@ -387,7 +386,7 @@ def __start_suspend(sessions, state, matches = None):
             start_time=__current_time(state)
             )
         if matches:
-            sessions['suspend'].start_cc = float(matches.groups()[0])*3.6
+            sessions['suspend'].start_cc = float(matches.groups()[0])/1000
     return
 
 def __close_suspend(sessions, state, matches = None):
@@ -437,6 +436,8 @@ def __close_active(sessions, state, matches = None):
                 )
             sessions['full'].tops['cost_active'].insert(s)
             sessions['full'].tops['duration_active'].insert(s)
+        if sessions['wakeup']:
+            sessions['wakeup'].cost += sessions['active'].cost
         sessions['active'] = None
     return
 
@@ -493,10 +494,11 @@ def __close_wakeup(sessions, state, matches = None):
     sessions['wakeup'] = None
 
 def __start_displayon(sessions, state, matches = None):
-    if sessions['active'] is not None and sessions['active'].reason != 'displayon':
+    if sessions['active'] and sessions['active'].reason != 'displayon':
         sessions['last_active'] = sessions['active']
         sessions['last_active'].end = state['kernel_time_stamp']
         sessions['last_active'].end_time = __current_time(state)
+    if sessions['active'] is None or sessions['active'].reason != 'displayon':
         sessions['active'] = Session(
             start = state['kernel_time_stamp'],
             start_time = __current_time(state),
@@ -508,7 +510,7 @@ def __start_displayon(sessions, state, matches = None):
 def __close_displaytoggle(sessions, state, matches = None):
     if sessions['last_active']:
         s = sessions['last_active']
-        s.end_cc = float(matches.groups()[0])*3.6
+        s.end_cc = float(matches.groups()[0])/1000
         s.cost = __cost(s)
         s.duration = __duration(s)
         if sessions['discharge']:
@@ -521,6 +523,9 @@ def __close_displaytoggle(sessions, state, matches = None):
                 )
             sessions['full'].tops['cost_active'].insert(s)
             sessions['full'].tops['duration_active'].insert(s)
+            if sessions['last_active'].reason == 'displayon':
+                sessions['full'].tops['cost_displayon'].insert(s)
+                sessions['full'].tops['duration_displayon'].insert(s)
         sessions['wakeup'].cost += s.cost
         sessions['last_active'] = None
     return
@@ -583,8 +588,9 @@ def freezing_regex_hook(sessions, state, matches):
 def aborted_regex_hook(sessions, state, matches):
     # Don't have to check other sessions because this line has been processed by freezing_regex_hook
     # Starts next active
-    state['active_type'] = 'ABORT'
     __cancel_suspend(sessions, state, matches)
+    sessions['active'].type = 'ABORT'
+    sessions['active'].reason = state['active_wakelock']
     return
 
 def failed_device_regex_hook(sessions, state, matches):
@@ -599,6 +605,7 @@ def failed_device_regex_hook(sessions, state, matches):
         sessions['active'] = None
     state['active_type'] = 'DEVICE'
     __cancel_suspend(sessions, state, matches)
+    sessions['active'].reason = matches.groups()[0]
     return
 
 def resumed_regex_hook(sessions, state, matches):
@@ -641,11 +648,11 @@ def wakeup_wakelock_regex_hook(sessions, state, matches):
         __missing_discharge(sessions, state, matches)
     if sessions['wakeup'] is not None:
         sessions['wakeup'] = None
-    else:
-        __start_wakeup(sessions, state, matches)
+    __start_wakeup(sessions, state, matches)
+    state['wakeup_wakelock'] = matches.groups()[0]
     return
 
-def susp_coulomb_regex_hook(sessions, state, matches):
+def suspend_coulomb_regex_hook(sessions, state, matches):
     # This is the first possible indicator for suspend start, but not in user build
     # Here we can close last active session
     if sessions['charge'] is not None or sessions['discharge'] is None:
@@ -659,15 +666,19 @@ def susp_coulomb_regex_hook(sessions, state, matches):
     if sessions['active'] is None:
         __missing_log_warning(sessions,state, 'active')
     else:
+        sessions['active'].end_cc = float(matches.groups()[0])/1000
+        sessions['active'].cost = __cost(sessions['active'])
         __close_active(sessions, state, matches)
     __start_suspend(sessions, state, matches)
     return
 
 def resume_coulomb_regex_hook(sessions, state, matches):
     if sessions['active'] and sessions['active'].type == 'WAKEUP':
-        sessions['active'].start_cc = float(matches.groups()[0])*3.6
+        sessions['active'].start_cc = float(matches.groups()[0])/1000
     if sessions['suspend']:
-        sessions['suspend'].end_cc = float(matches.groups()[0])*3.6
+        sessions['suspend'].end_cc = float(matches.groups()[0])/1000
+        sessions['suspend'].cost = __cost(sessions['suspend'])
+    state['resume_coulomb'] = float(matches.groups()[0])/1000
     return
 
 def longest_wakelock_regex_hook(sessions, state, matches):
@@ -682,16 +693,16 @@ def suspend_duration_regex_hook(sessions, state, matches):
 
 def sleep_coulomb_regex_hook(sessions, state, matches):
     if sessions['active'] and sessions['active'].reason == 'displayoff':
-        sessions['active'].start_cc = float(matches.groups()[0])*3.6
+        sessions['active'].start_cc = float(matches.groups()[0])/1000
     if sessions['last_active']:
-        sessions['last_active'].end_cc = float(matches.groups()[0])*3.6
+        sessions['last_active'].end_cc = float(matches.groups()[0])/1000
     return
 
 def wakeup_coulomb_regex_hook(sessions, state, matches):
     if sessions['active'] and sessions['active'].reason == 'displayon':
-        sessions['active'].start_cc = float(matches.groups()[0])*3.6
+        sessions['active'].start_cc = float(matches.groups()[0])/1000
     if sessions['last_active']:
-        sessions['last_active'].end_cc = float(matches.groups()[0])*3.6
+        sessions['last_active'].end_cc = float(matches.groups()[0])/1000
     return
 
 def __close_sessions(sessions, state):
@@ -862,9 +873,9 @@ def print_summary(full):
     cells = list()
     for i,j in [('Suspend', suspend_sum), ('Wake-Up', awoken_sum)]:
         if j.duration != 0:
-            cells.append([i, '%.2f(%.2f)'%(j.duration, j.duration/total_duration),\
+            cells.append([i, '%.2f(%.1f%%)'%(j.duration, j.duration/total_duration*100),\
                               '%.2f'%(j.cost),\
-                              '%.2f'%(3600*j.cost/j.duration)
+                              '%.2f'%(j.cost*3600/j.duration)
                           ])
     table(1, ['', 'Total Duration(seconds)', 'Total Cost(mAh)', 'Average Current(mA)'], cells)
     print 'Reasons Keeping Phone active'
@@ -889,16 +900,21 @@ def print_summary(full):
 
     print '\tTop Wakeup Sources in Count'
     t = Top('count')
-    t.select(awoken_sum.resume_stats.values())
+    t.select(awoken_sum.active_stats['WAKEUP'].values())
     top_table(2, t.list)
     print '\tTop Freezing Abort in Count'
     t = Top('count')
-    t.select(awoken_sum.abort_stats.values())
+    t.select(awoken_sum.active_stats['ABORT'].values())
     top_table(2, t.list)
     print '\tTop Device Failure in Count'
     t = Top('duration')
-    t.select(awoken_sum.failure_stats.values())
+    t.select(awoken_sum.active_stats['DEVICE'].values())
     top_table(2, t.list)
+    print '\tLongest Display Session'
+    top_table(2, full.tops['duration_displayon'].list,\
+                  ['duration(seconds)','start','end','cost(mAh)'],\
+                  ['duration','start','end','cost']\
+                  )
 
     if VERBOSE == False:
         return
