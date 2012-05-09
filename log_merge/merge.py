@@ -27,7 +27,7 @@ AUTHOR = 'Peng Liu-a22543@motorola.com'
 LAST_UPDATE = 'Nov 30, 2011'
 IMPOSSIBLE_TIMEZONE = "54000"
 
-KERNEL_TIME_STAMP = '^<\d>\[ *(\d+)\.(\d+)\] (.*)'
+KERNEL_TIME_STAMP = '^<\d>\[ *(\d+)\.(\d{6})[^\]]*\] (.*)'
 LOGCAT_TIME_STAMP = '^(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{3}) (.*)'
 RTC_TIME_STAMP = \
     ' \(*(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{9})* UTC'
