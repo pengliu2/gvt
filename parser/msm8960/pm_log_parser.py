@@ -510,7 +510,8 @@ def __start_displayon(sessions, state, matches = None):
 def __close_displaytoggle(sessions, state, matches = None):
     if sessions['last_active']:
         s = sessions['last_active']
-        s.end_cc = float(matches.groups()[0])/1000
+        if matches:
+            s.end_cc = float(matches.groups()[0])/1000
         s.cost = __cost(s)
         s.duration = __duration(s)
         if sessions['discharge']:
@@ -526,7 +527,8 @@ def __close_displaytoggle(sessions, state, matches = None):
             if sessions['last_active'].reason == 'displayon':
                 sessions['full'].tops['cost_displayon'].insert(s)
                 sessions['full'].tops['duration_displayon'].insert(s)
-        sessions['wakeup'].cost += s.cost
+        if sessions['wakeup']:
+            sessions['wakeup'].cost += s.cost
         sessions['last_active'] = None
     return
 
