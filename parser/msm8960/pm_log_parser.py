@@ -926,7 +926,7 @@ def print_summary(full):
     print '=============================='
     print 'Top Wakeup Sources in Duration'
     t = Top('duration')
-    t.select(awoken_sum.resume_stats.values())
+    t.select(awoken_sum.active_stats['WAKEUP'].values())
     top_table(1, t.list)
     print 'Top Wakeup Sources in Cost'
     t = Top('cost')
