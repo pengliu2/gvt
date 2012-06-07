@@ -387,7 +387,8 @@ def __start_suspend(sessions, state, matches = None):
             start_time=__current_time(state)
             )
         if matches:
-            sessions['suspend'].start_cc = float(matches.groups()[0])/1000
+            if len(matches.groups()):
+                sessions['suspend'].start_cc = float(matches.groups()[0])/1000
     return
 
 def __close_suspend(sessions, state, matches = None):
@@ -513,7 +514,8 @@ def __close_displaytoggle(sessions, state, matches = None):
     if sessions['last_active']:
         s = sessions['last_active']
         if matches:
-            s.end_cc = float(matches.groups()[0])/1000
+            if len(matches.groups()):
+                s.end_cc = float(matches.groups()[0])/1000
         s.cost = __cost(s)
         s.duration = __duration(s)
         if sessions['discharge']:
