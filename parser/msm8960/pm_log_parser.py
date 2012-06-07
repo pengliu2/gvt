@@ -204,6 +204,7 @@ class DischargeSession(Session):
             )
         self.awoken_sum = AwokenSum()
         self.suspend_sum = Sum()
+        self.rtc_only = 0.0
 
 # Not used yet
 ################################################################################
@@ -283,7 +284,7 @@ REGEX = {
         (re.compile('Booting Linux'),
          'booting_regex_hook'),
     'freezing': # This might be the first indicator for suspend kicking off if suspend_coulomb is not present
-        (re.compile('Freezing of user space processes ...'),
+        (re.compile('Freezing user space processes ...'),
          'freezing_regex_hook'),
     'aborted1':
         (re.compile('Freezing of tasks  aborted'),
@@ -397,6 +398,7 @@ def __close_suspend(sessions, state, matches = None):
         s.duration = __duration(s) + state['suspend_duration']
         if sessions['discharge']:
             sessions['discharge'].suspend_sum.add(s.duration, s.cost)
+            sessions['discharge'].rtc_only += state['suspend_duration']
         sessions['suspend'] = None
     return
 
@@ -466,7 +468,7 @@ def __close_discharge(sessions, state, matches = None):
         s = sessions['discharge']
         s.end = state['kernel_time_stamp']
         s.end_time = __current_time(state)
-        s.duration = __duration(s)
+        s.duration = __duration(s) + s.rtc_only
         sessions['full'].discharge_sessions.append(s)
         sessions['discharge'] = None
 
@@ -930,23 +932,23 @@ def print_summary(full):
     top_table(1, t.list)
     print 'Top Wakeup Sources in Cost'
     t = Top('cost')
-    t.select(awoken_sum.resume_stats.values())
+    t.select(awoken_sum.active_stats['WAKEUP'].values())
     top_table(1, t.list)
     print 'Top Freezing Abort in Duration'
     t = Top('duration')
-    t.select(awoken_sum.abort_stats.values())
+    t.select(awoken_sum.active_stats['ABORT'].values())
     top_table(1, t.list)
     print 'Top Freezing Abort in Cost'
     t = Top('cost')
-    t.select(awoken_sum.abort_stats.values())
+    t.select(awoken_sum.active_stats['ABORT'].values())
     top_table(1, t.list)
     print 'Top Device Failure in Duration'
     t = Top('count')
-    t.select(awoken_sum.failure_stats.values())
+    t.select(awoken_sum.active_stats['DEVICE'].values())
     top_table(1, t.list)
     print 'Top Device Failure in Cost'
     t = Top('count')
-    t.select(awoken_sum.failure_stats.values())
+    t.select(awoken_sum.active_stats['DEVICE'].values())
     top_table(1, t.list)
     print 'Top Blocking Wakelocks in Count'
     t = Top('count')
@@ -966,32 +968,32 @@ def print_summary(full):
     print '=============================='
 
     print 'Longest Awoken Sessions'
-    top_table(1, awoken_sum.top_duration_awoken.list,\
+    top_table(2, full.tops['duration_awoken'].list,\
                   ['duration(seconds)','start','end','cost(mAh)'],\
                   ['duration','start','end','cost',]\
                   )
     print 'Most Expensive Awoken Sessions'
-    top_table(1, awoken_sum.top_cost_awoken.list,\
+    top_table(2, full.tops['cost_awoken'].list,\
                   ['cost','start','end','duration'],\
                   ['cost','start','end','duration'],\
                   )                  
     print 'Longest Display-off Active Sessions'
-    top_table(1, awoken_sum.top_duration_active.list,\
+    top_table(2, full.tops['duration_active'].list,\
                   ['duration','start','end','cost'],\
                   ['duration','start','end','cost',]\
                   )
     print 'Most Expensive Display-off Active Sessions'
-    top_table(1, awoken_sum.top_cost_active.list,\
+    top_table(2, full.tops['cost_active'].list,\
                   ['cost','start','end','duration'],\
                   ['cost','start','end','duration'],\
                   )
     print 'Longest Display-On Sessions'
-    top_table(1, awoken_sum.top_duration_displayon.list,\
+    top_table(2, full.tops['duration_displayon'].list,\
                   ['duration','start','end','cost'],\
                   ['duration','start','end','cost',]\
                   )
     print 'Most Expensive Display-On Sessions'
-    top_table(1, awoken_sum.top_cost_displayon.list,\
+    top_table(2, full.tops['cost_displayon'].list,\
                   ['duration','start','end','cost'],\
                   ['duration','start','end','cost',]\
                   )
