@@ -3,9 +3,9 @@ from optparse import OptionParser
 
 
 TOP = 5
-SOFTWARE_NAME = 'log parser'
+SOFTWARE_NAME = 'log parser - Thor plat'
 AUTHOR = 'Peng Liu - <a22543@motorola.com>'
-LAST_UPDATE = 'Apr 06, 2012'
+LAST_UPDATE = 'JUN 11, 2012'
 
 ################################################################################
 UNKNOWN = 'UNKNOWN'
@@ -35,11 +35,11 @@ def __duration(s):
     return s.end_time - s.start_time
 
 def __cost(s):
-    c = s.end_cc - s.start_cc
+    c = s.start_cc - s.end_cc
     if c < 0:
         __error_print('cost < 0 when (%f - %f) for %s,%s from %s to %s'%(
-                s.end_cc,
                 s.start_cc,
+                s.end_cc,
                 s.type,
                 s.reason,
                 s.start,
@@ -232,7 +232,7 @@ def __init_cur():
     # This is for tne nearest resume
     cur_state['active_wakelock'] = UNKNOWN
     cur_state['failed_device'] = UNKNOWN
-    cur_state['wakeup_wakelock'] = UNKNOWN
+    cur_state['wakeup_source'] = UNKNOWN
     cur_state['active_type'] = 'UNKNOWN'
     cur_state['active_reason'] = UNKNOWN
 
@@ -281,7 +281,7 @@ def time_and_body(line):
 REGEX = {
     # Linux standard info
     'booting':
-        (re.compile('Booting Linux'),
+        (re.compile('Initializing cgroup subsys cpuset'),
          'booting_regex_hook'),
     'freezing': # This might be the first indicator for suspend kicking off if suspend_coulomb is not present
         (re.compile('Freezing user space processes ...'),
@@ -296,7 +296,7 @@ REGEX = {
         (re.compile('suspend aborted....'),
          'aborted_regex_hook'),
     'failed_device':
-        (re.compile('PM: Device ([^ ]+) failed to'),
+        (re.compile('PM: Device ([^ ]+) failed to suspend'),
          'failed_device_regex_hook'),
     'resumed': # This is the first indicator for last suspend session closing and the wakeup session can be opened
         (re.compile('suspend: exit suspend, ret = 0 \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
@@ -313,10 +313,10 @@ REGEX = {
         # Display-on active session can be started, but last active session not finished yet because we don't know the cost
         (re.compile('request_suspend_state: wakeup \(3->0\)'),
          'wakeup_regex_hook'),
-    'wakeup_wakelock':
+    'wakeup_source':
          # This is the first possible indicator for resume from successful suspend. Here wakeup session must be opened, but suspend not closed yet
-        (re.compile('wakeup wake lock: ([\w-]+)'),
-         'wakeup_wakelock_regex_hook'),
+        (re.compile('wakeup from +(.+)$'),
+         'wakeup_source_regex_hook'),
     # Motorola debug info
     'suspend_coulomb': # This is the first possible indicator for suspend, but not in user build. Last active session can be closed.
         (re.compile('pm_debug: suspend uah=(-{0,1}\d+)'),
@@ -339,14 +339,17 @@ REGEX = {
     'wakeup_coulomb': # Not in user build
         (re.compile('pm_debug: wakeup uah=(-{0,1}\d+)'),
          'wakeup_coulomb_regex_hook'),
-    # MSM
+    # BSP
     'charging':
-        (re.compile('msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)'),
+        (re.compile('intel_mdf_battery msic_battery: Enable Charging'),
          'charging_regex_hook'),
     'discharging':
         # Last charge session can be close
-        (re.compile('msm_otg msm_otg: Avail curr from USB = 0$'),
+        (re.compile('intel_mdf_battery msic_battery: Stopping charging'),
          'discharging_regex_hook'),
+    'deep_sleep':
+        (re.compile('CPU 1 is now offline'),
+         'deep_sleep_regex_hook'),
     }
 
 def __missing_log_warning(s,c,e):
@@ -627,7 +630,7 @@ def resumed_regex_hook(sessions, state, matches):
         __start_active(sessions, state, matches)
         sessions['active'].start_cc = state['resume_coulomb']
         sessions['active'].type = 'WAKEUP'
-        sessions['active'].reason = state['wakeup_wakelock']
+        sessions['active'].reason = state['wakeup_source']
     return
 
 def active_wakelock_regex_hook(sessions, state, matches):
@@ -646,7 +649,7 @@ def wakeup_regex_hook(sessions, state, matches):
         __start_displayon(sessions, state, matches)
     return
 
-def wakeup_wakelock_regex_hook(sessions, state, matches):
+def wakeup_source_regex_hook(sessions, state, matches):
     # A new wakeup can be started here
     # Suspend not closed yet because we don't know cost
     if sessions['charge'] is not None or sessions['discharge'] is None:
@@ -655,7 +658,7 @@ def wakeup_wakelock_regex_hook(sessions, state, matches):
     if sessions['wakeup'] is not None:
         sessions['wakeup'] = None
     __start_wakeup(sessions, state, matches)
-    state['wakeup_wakelock'] = matches.groups()[0]
+    state['wakeup_source'] = matches.groups()[0]
     return
 
 def suspend_coulomb_regex_hook(sessions, state, matches):
@@ -693,7 +696,6 @@ def longest_wakelock_regex_hook(sessions, state, matches):
     return
 
 def suspend_duration_regex_hook(sessions, state, matches):
-    __close_wakeup(sessions, state, matches)
     state['suspend_duration'] = float(matches.groups()[0])/1000000000
     return
 
@@ -740,6 +742,10 @@ def discharging_regex_hook(sessions, state, matches):
         __start_displayon(sessions, state, matches)
     else:
         __start_displayoff(sessions, state, matches)
+    return
+
+def deep_sleep_regex_hook(sessions, state, matches):
+    __close_wakeup(sessions, state, matches)
     return
 
 def __debug_print_all(sessions, state):
