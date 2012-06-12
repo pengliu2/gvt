@@ -317,6 +317,10 @@ REGEX = {
          # This is the first possible indicator for resume from successful suspend. Here wakeup session must be opened, but suspend not closed yet
         (re.compile('wakeup from +(.+)$'),
          'wakeup_source_regex_hook'),
+    'wakeup_wakelock':
+        # When wakeup_source is not available, this is the wakeup_source
+    (re.compile('wakeup wake lock: ([\w-]+)'),
+     'wakeup_wakelock_regex_hook'),
     # Motorola debug info
     'suspend_coulomb': # This is the first possible indicator for suspend, but not in user build. Last active session can be closed.
         (re.compile('pm_debug: suspend uah=(-{0,1}\d+)'),
@@ -659,6 +663,15 @@ def wakeup_source_regex_hook(sessions, state, matches):
         sessions['wakeup'] = None
     __start_wakeup(sessions, state, matches)
     state['wakeup_source'] = matches.groups()[0]
+    return
+
+def wakeup_wakelock_regex_hook(sessions, state, matches):
+    if sessions['wakeup'] is None:
+        if sessions['charge'] is not None or sessions['discharge'] is None:
+            __close_charge(sessions, state, matches)
+            __missing_discharge(sessions, state, matches)
+        __start_wakeup(sessions, state, matches)
+        state['wakeup_source'] = matches.groups()[0]
     return
 
 def suspend_coulomb_regex_hook(sessions, state, matches):
