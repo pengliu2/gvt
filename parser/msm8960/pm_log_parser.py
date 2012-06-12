@@ -315,8 +315,8 @@ REGEX = {
          'wakeup_regex_hook'),
     'wakeup_wakelock':
          # This is the first possible indicator for resume from successful suspend. Here wakeup session must be opened, but suspend not closed yet
-        (re.compile('wakeup wake lock: ([\w-]+)'),
-         'wakeup_wakelock_regex_hook'),
+    (re.compile("gic_show_resume_irq: (\d+) triggered"),
+     'wakeup_wakelock_regex_hook'),
     # Motorola debug info
     'suspend_coulomb': # This is the first possible indicator for suspend, but not in user build. Last active session can be closed.
         (re.compile('pm_debug: suspend uah=(-{0,1}\d+)'),
