@@ -348,7 +348,7 @@ REGEX = {
         (re.compile('intel_mdf_battery msic_battery: Stopping charging'),
          'discharging_regex_hook'),
     'deep_sleep':
-        (re.compile('CPU 1 is now offline'),
+        (re.compile('PM: late suspend of devices complete'),
          'deep_sleep_regex_hook'),
     }
 
