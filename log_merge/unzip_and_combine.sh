@@ -1,9 +1,21 @@
 current=`pwd`
-zipped_file=$3.txt.gz
-extracted_file=log.$3.txt
-output=$3.txt
-folder=$1
-prefix=$2
+if [ $# -eq "3" ]
+then
+    zipped_file=$3.txt.gz
+    extracted_file=log.$3.txt
+    output=$3.txt
+    folder=$1
+    prefix=$2_
+else 
+    if [ $# -eq "2" ]
+    then
+        zipped_file=$2.txt.gz
+        extracted_file=log.$2.txt
+        output=$2.txt
+        folder=$1
+        prefix=""
+    fi
+fi
 
 cd ${folder}
 for i in *.${zipped_file}
@@ -14,7 +26,7 @@ done
 rm -f $output
 
 i=0
-while [ -e "${prefix}_backup.$i.${extracted_file}" ]
+while [ -e "${prefix}backup.$i.${extracted_file}" ]
 do
     i=`expr $i + 1`
 done 
@@ -22,10 +34,10 @@ done
 while [ "$i" -gt "0" ]
 do
     i=`expr $i - 1`
-    ls -l ${prefix}_backup.$i.${extracted_file}
-    cat ${prefix}_backup.$i.${extracted_file} >> $output
+    ls -l ${prefix}backup.$i.${extracted_file}
+    cat ${prefix}backup.$i.${extracted_file} >> $output
 done
 
-cat ${prefix}_${extracted_file} >> $output
+cat ${prefix}${extracted_file} >> $output
 
 cd ${current}
