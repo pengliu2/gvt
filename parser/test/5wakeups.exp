@@ -1,0 +1,36 @@
+----
+Total log time:			293.504916	(100%) 31424932033692440.00mA
+Total suspend time:		175.45	(59.10%) 0.00mA
+Total suspend count:		5
+Total Active time:
+	Total display on time:		82.40	(27.75%) 0.00mA
+	Total display off (active) time:35.65	(12.01%) 258702029492043648.00mA
+	Total USB connected time:	0.00	(0.00%)
+	Total CPU1 up time:		0.00	(0.00%)
+
+
+	Wakeup Sources Ordered By Count
+		________________________________________________________________________________________________
+		name			count			duration(seconds)	cost(mAh)		
+		UNKNOWN			4			2.03869700001		0.0			
+		________________________________________________________________________________________________
+
+	Freezing Abort Reasons Ordered By Count
+		________________________________________________________________________________________________
+		name			count			duration(seconds)	cost(mAh)		
+		________________________________________________________________________________________________
+
+	Device Failure Reasons Ordered By Count
+		________________________________________________________________________________________________
+		name			count			duration(seconds)	cost(mAh)		
+		________________________________________________________________________________________________
+
+	Longest Wakelocks Ordered By Duration
+		________________________________________________________________________
+		name			count			duration(seconds)	
+		msicbattery_wakelock	1			671.386990422		
+		alarm_rtc		1			29.832793586		
+		rx_wake			1			3.187033652		
+		mid_pmu			2			1.997842522		
+		________________________________________________________________________
+

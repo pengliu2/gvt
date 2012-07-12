@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log_parser>
+  <platform>Thro</platform>
+  <product>SMi</product>
+  <meter>CC</meter>
+  <!-- Special log patterns -->
+  <!-- Special log patterns: BSP specific -->
+  <boot_start>Booting Linux</boot_start>
+  <start_charging>msm_otg msm_otg: Avail curr from USB = ([1-9]\d*)</start_charging>
+  <stop_charging>msm_otg msm_otg: Avail curr from USB = 0$</stop_charging>
+  <deep_sleep>msm_pm_enter: power collapse</deep_sleep>
+  <wakeup_source_before_wakeuplock>gic_show_resume_irq: (\d+) triggered</wakeup_source_before_wakeuplock>
+  <cpu1_on>CPU1 is up</cpu1_on>
+  <cpu1_off>CPU1: shutdown</cpu1_off>
+  <!-- interrupt names -->
+  <interrupts>
+    <irq number="17" name="dg_timer" />
+    <irq number="18" name="gp_timer" />
+    <irq number="20" name="apps_wdog_bark" />
+    <irq number="30" name="MSM_L1" />
+    <irq number="34" name="MSM_L2" />
+    <irq number="48" name="msmgpio" />
+    <irq number="51" name="rpm_drv" />
+    <irq number="52" name="mpm_drv" />
+    <irq number="54" name="pm_drv" />
+    <irq number="65" name="msm_slim_irq" />
+    <irq number="66" name="sps" />
+    <irq number="67" name="modem_wdog_fw" />
+    <irq number="68" name="modem_wdog_sw" />
+    <irq number="69" name="smd_dev" />
+    <irq number="70" name="smsm_dev" />
+    <irq number="79" name="vfe" />
+    <irq number="80" name="vfe" />
+    <irq number="81" name="vidc" />
+    <irq number="84" name="msm_iommu_secure_irpt_handler" />
+    <irq number="86" name="msm_iommu_secure_irpt_handler" />
+    <irq number="88" name="msm_iommu_secure_irpt_handler" />
+    <irq number="90" name="msm_iommu_secure_irpt_handler" />
+    <irq number="92" name="msm_iommu_secure_irpt_handler" />
+    <irq number="94" name="msm_iommu_secure_irpt_handler" />
+    <irq number="96" name="msm_iommu_secure_irpt_handler" />
+    <irq number="98" name="msm_iommu_secure_irpt_handler" />
+    <irq number="100" name="msm_iommu_secure_irpt_handler" />
+    <irq number="102" name="msm_iommu_secure_irpt_handler" />
+    <irq number="104" name="msm_iommu_secure_irpt_handler" />
+    <irq number="105" name="msm_rotator" />
+    <irq number="107" name="MDP" />
+    <irq number="111" name="hdmi_msm_isr" />
+    <irq number="112" name="kgsl-3d0" />
+    <irq number="113" name="kgsl-2d0" />
+    <irq number="114" name="MIPI_DSI" />
+    <irq number="115" name="csid" />
+    <irq number="116" name="csid" />
+    <irq number="119" name="q6_wdog" />
+    <irq number="121" name="smsm_dev" />
+    <irq number="122" name="smd_dev" />
+    <irq number="128" name="sps" />
+    <irq number="130" name="sps" />
+    <irq number="132" name="msm_otg, msm_hsusb" />
+    <irq number="134" name="msm-sdcc (cmd), msm-sdcc (pio)" />
+    <irq number="136" name="msm-sdcc (cmd), msm-sdcc (pio)" />
+    <irq number="137" name="sps" />
+    <irq number="169" name="smsm_dev" />
+    <irq number="170" name="smd_dev" />
+    <irq number="171" name="csiphy" />
+    <irq number="172" name="csiphy" />
+    <irq number="179" name="spi_qsd" />
+    <irq number="183" name="qup_err_intr" />
+    <irq number="185" name="qup_err_intr" />
+    <irq number="203" name="msmdatamover" />
+    <irq number="210" name="tsens_interrupt" />
+    <irq number="224" name="qup_err_intr" />
+    <irq number="230" name="smd_dev" />
+    <irq number="231" name="riva_wdog" />
+    <irq number="234" name="wcnss_wlan" />
+    <irq number="236" name="smsm_dev" />
+    <irq number="241" name="sps" />
+    <irq number="243" name="msm_iommu_secure_irpt_handler" />
+    <irq number="244" name="kgsl-2d1" />
+    <irq number="245" name="dsps_wdog" />
+    <irq number="334" name="cyttsp3-i2c" />
+    <irq number="337" name="ct406" />
+    <irq number="350" name="tabla" />
+    <irq number="355" name="pcb_temp_sensor" />
+    <irq number="378" name="EMU_SCI_OUT_GPIO" />
+    <irq number="392" name="pm8xxx_usr_irq" />
+    <irq number="448" name="VCP_IRQ" />
+    <irq number="449" name="CHGWDOG_IRQ" />
+    <irq number="450" name="VBAT_OV_IRQ" />
+    <irq number="451" name="USBIN_UV_IRQ" />
+    <irq number="452" name="VBATDET_LOW_IRQ" />
+    <irq number="453" name="BATT_INSERTED_IRQ" />
+    <irq number="454" name="USBIN_OV_IRQ" />
+    <irq number="455" name="USBIN_VALID_IRQ" />
+    <irq number="456" name="TRKLCHG_IRQ" />
+    <irq number="457" name="FASTCHG_IRQ" />
+    <irq number="458" name="LOOP_CHANGE_IRQ" />
+    <irq number="459" name="CHGSTATE_IRQ" />
+    <irq number="460" name="CHGFAIL_IRQ" />
+    <irq number="461" name="CHGDONE_IRQ" />
+    <irq number="462" name="ATCFAIL_IRQ" />
+    <irq number="463" name="ATCDONE_IRQ" />
+    <irq number="464" name="VDD_LOOP_IRQ" />
+    <irq number="465" name="COARSE_DET_LOW_IRQ" />
+    <irq number="466" name="BAT_TEMP_OK_IRQ" />
+    <irq number="467" name="CHG_GONE_IRQ" />
+    <irq number="468" name="BATTTEMP_COLD_IRQ" />
+    <irq number="469" name="CHGHOT_IRQ" />
+    <irq number="470" name="BATTTEMP_HOT_IRQ" />
+    <irq number="471" name="BATT_REMOVED_IRQ" />
+    <irq number="474" name="pm8921_overtemp_irq" />
+    <irq number="479" name="pm8xxx_rtc_alarm" />
+    <irq number="480" name="DCIN_UV_IRQ" />
+    <irq number="481" name="DCIN_OV_IRQ" />
+    <irq number="482" name="DCIN_VALID_IRQ" />
+    <irq number="484" name="BATFET_IRQ" />
+    <irq number="485" name="VBATDET_IRQ" />
+    <irq number="486" name="pm8921_batt_alarm_irq" />
+    <irq number="487" name="VREG_OV_IRQ" />
+    <irq number="490" name="pmic8xxx_pwrkey_release" />
+    <irq number="491" name="pmic8xxx_pwrkey_press" />
+    <irq number="492" name="restart_from_pmic" />
+    <irq number="495" name="pm8921_tempstat_irq" />
+    <irq number="512" name="pm8xxx_btm_cool_interrupt" />
+    <irq number="513" name="pm8xxx_btm_warm_interrupt" />
+    <irq number="514" name="pmic-keypad" />
+    <irq number="515" name="pmic-keypad-stuck" />
+    <irq number="518" name="pm8xxx_adc_interrupt" />
+    <irq number="560" name="bms_eoc_ccadc" />
+    <irq number="561" name="PM8921_BMS_VSENSE_AVG" />
+    <irq number="562" name="PM8921_BMS_GOOD_OCV" />
+    <irq number="563" name="PM8921_BMS_OCV_FOR_R" />
+    <irq number="564" name="PM8921_BMS_VSENSE_FOR_R" />
+    <irq number="565" name="PM8921_BMS_VSENSE_THR" />
+    <irq number="566" name="PM8921_BMS_CC_THR" />
+    <irq number="567" name="PM8921_BMS_SBI_WRITE_OK" />
+    <irq number="651" name="msm-sdcc (slot)" />
+    <irq number="666" name="SEMU_PPD_DET_GPIO" />
+    <irq number="696" name="SLIMBUS Slave" />
+    <irq number="697" name="Headset remove detect" />
+    <irq number="700" name="Button Release detect" />
+    <irq number="701" name="DC Estimation detect" />
+    <irq number="702" name="Headset insert detect" />
+    <irq number="712" name="HPH_L OCP detect" />
+    <irq number="713" name="HPH_R OCP detect" />
+    <irq number="IPI0" name="CPU start interrupts" />
+    <irq number="IPI1" name="Timer broadcast interrupts" />
+    <irq number="IPI2" name="Rescheduling interrupts" />
+    <irq number="IPI3" name="Function call interrupts" />
+    <irq number="IPI4" name="Single function call interrupts" />
+    <irq number="IPI5" name="CPU stop interrupts" />
+    <irq number="IPI6" name="CPU backtrace" />
+  </interrupts>
+</log_parser>

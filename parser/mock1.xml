@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log_parser>
+  <platform>Mock</platform>
+  <product>m1</product>
+  <meter>CC</meter>
+  <!-- Special log patterns -->
+  <!-- Special log patterns: BSP specific -->
+  <boot_start>Booting Linux</boot_start>
+  <start_charging>parser test: start charging</start_charging>
+  <stop_charging>parser test: stop charging</stop_charging>
+  <wakeup_source_log_before_wakeuplock>wakeup source before wakelock: +(.+)</wakeup_source_log_before_wakeuplock>
+  <wakeup_source_log_after_wakeuplock>wakeup source after wakelock: +(.+)</wakeup_source_log_after_wakeuplock>
+</log_parser>

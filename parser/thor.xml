@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log_parser>
+  <platform>Thor</platform>
+  <product>SMi</product>
+  <meter>capacity</meter>
+  <!-- Special log patterns -->
+  <!-- Special log patterns: BSP specific -->
+  <boot_start>BIOS-provided physical RAM map:</boot_start>
+  <start_charging>intel_mdf_battery msic_battery: Enable Charging</start_charging>
+  <stop_charging>intel_mdf_battery msic_battery: Stopping charging</stop_charging>
+  <deep_sleep>PM: late suspend of devices complete</deep_sleep>
+  <wakeup_source_after_wakeuplock>wakeup from +(.+)$</wakeup_source_after_wakeuplock>\
+  <cpu1_on>CPU1 is up</cpu1_on>
+  <cpu1_off>CPU 1 is now offline</cpu1_off>
+</log_parser>

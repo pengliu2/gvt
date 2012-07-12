@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log_parser>
+  <platform>Mock</platform>
+  <product>m3</product>
+  <meter>mA</meter>
+  <!-- Special log patterns -->
+  <!-- Special log patterns: BSP specific -->
+</log_parser>

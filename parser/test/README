@@ -1,0 +1,17 @@
+ - nothing.txt, mock1
+   - Nothing in the log file.
+   - The parser should just print the log duration and quit.
+   - nothing.txt has 1925.924312 seconds.
+
+ - no_suspend.txt, mock1
+   - The log file doesn't include any suspend cycle.
+   - The parser should print correct dislay on time and display off time.
+   - no_suspend.txt starts from Booting Linux
+   - The display-on duration is 902.487811
+
+ - charger_and_resume.txt, mock2
+   - The log file has 2 charge cycles, totally lasting 8.946314 seconds
+   - At the second charge start point, resumed log is behind it. The parser should also list 1 msm_otg wakeup.
+
+ - wakeups_and_display.txt
+   - The log file has 3 alarm_rtc wakeups, 2 event0-412 wakeups, 1 bootup wakeup and 1 msm_ipc_router_smd_xprt wakeup.
