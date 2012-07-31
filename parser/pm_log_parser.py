@@ -1257,6 +1257,7 @@ def append_regex(platxml, tag, func, array):
 
 INTERRUPTS = dict()
 if __name__ == "__main__":
+    current_dir = os.getcwd()
     sys.stderr.write(SOFTWARE_NAME+' '+LAST_UPDATE+os.linesep)
     sys.stderr.write(AUTHOR+os.linesep)
     print "----"
@@ -1284,13 +1285,15 @@ if __name__ == "__main__":
     __debug_print("DEBUG message is on!")
     platfile = os.path.dirname(os.path.realpath(__file__))+os.sep+plat+'.xml'
     if not os.path.isfile(platfile):
-        __warning_print("%s is not fully supported yet"%plat)
-    platxml = minidom.parseString(open(platfile).read())
-    for i in BSP_REGEX.keys():
-        append_regex(platxml, i, BSP_REGEX[i], REGEX)
+        platfile = current_dir+os.sep+plat+'.xml'
+    if not os.path.isfile(platfile):
+        __error_print("platform [%s] is not fully supported yet"%plat)
     try:
-        interrupts = platxml.getElementsByTagName('interrupts')[0]
-        irqs = interrupts.getElementsByTagName('irq')
+        platxml = minidom.parseString(open(platfile).read())
+        for i in BSP_REGEX.keys():
+            append_regex(platxml, i, BSP_REGEX[i], REGEX)
+            interrupts = platxml.getElementsByTagName('interrupts')[0]
+            irqs = interrupts.getElementsByTagName('irq')
         for i in irqs:
             INTERRUPTS[i.getAttribute('number')] = i.getAttribute('name')
     except:
