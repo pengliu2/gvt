@@ -1305,8 +1305,8 @@ if __name__ == "__main__":
         fobj_in = open(objfile, 'r')
 #        fobj_out = open(objfile+'.csv', 'w')
     except Exception as e:
-        __error_print('Opening input or output file'+
-                      os.linesep + e)
+        __error_print('Opening input or output file:%s%s'%
+                      (os.linesep,e))
         if fobj_in:
             fobj_in.close()
         sys.exit(1)
