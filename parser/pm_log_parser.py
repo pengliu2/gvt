@@ -5,7 +5,7 @@ from xml.dom import minidom,Node
 TOP = 5
 SOFTWARE_NAME = 'log parser'
 AUTHOR = 'Peng Liu - <a22543@motorola.com>'
-LAST_UPDATE = 'JUL 12, 2012'
+LAST_UPDATE = 'AUG 06, 2012'
 
 ################################################################################
 UNKNOWN = 'UNKNOWN'
@@ -342,7 +342,7 @@ REGEX = {
         (re.compile('PM: Device ([^ ]+) failed to suspend'),
          'failed_device_regex_hook'),
     'resumed': # This is the indicator for last suspend session closing and the wakeup session can be opened
-        (re.compile('suspend: exit suspend, ret = 0 \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
+        (re.compile('suspend: exit suspend, ret = (-{0,1}\d+) \((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{9}) UTC\)'),
          'resumed_regex_hook'),
     # Android
     'active_wakelock':
@@ -452,18 +452,15 @@ def __close_suspend(sessions, state, matches = None):
 
 
 def __start_active(sessions, state, matches = None):
-    if sessions['active'] is None:
-        sessions['active'] = Session(
-            start=state['kernel_time_stamp'],
-            start_time=__current_time(state),
-            typ=state['active_type'],
-            reason=UNKNOWN
-            )
+    sessions['active'] = Session(
+        start=state['kernel_time_stamp'],
+        start_time=__current_time(state),
+        typ=state['active_type'],
+        reason=UNKNOWN
+        )
     return
 
 def __cancel_suspend(sessions, state, matches = None):
-    __start_active(sessions, state, matches)
-    sessions['active'].start_cc = sessions['suspend'].start_cc
     sessions['suspend'] = None
     return
     
@@ -645,9 +642,11 @@ def freezing_regex_hook(sessions, state, matches):
 def aborted_regex_hook(sessions, state, matches):
     # Don't have to check other sessions because this line has been processed by freezing_regex_hook
     # Starts next active
-    __cancel_suspend(sessions, state, matches)
+    __start_active(sessions, state, matches)
     sessions['active'].type = 'ABORT'
     sessions['active'].reason = state['active_wakelock']
+    sessions['active'].start_cc = sessions['suspend'].start_cc
+    __cancel_suspend(sessions, state, matches)
     return
 
 def failed_device_regex_hook(sessions, state, matches):
@@ -661,36 +660,47 @@ def failed_device_regex_hook(sessions, state, matches):
         __missing_log_warning(sessions, state, 'active')
         sessions['active'] = None
     state['active_type'] = 'DEVICE'
-    __cancel_suspend(sessions, state, matches)
+    __start_active(sessions, state, matches)
     sessions['active'].reason = matches.groups()[0]
+    sessions['active'].start_cc = sessions['suspend'].start_cc
+    __cancel_suspend(sessions, state, matches)
     return
 
 def resumed_regex_hook(sessions, state, matches):
-    # Last suspend session can be closed here
-    if sessions['charge'] is not None or sessions['discharge'] is None:
-        __close_charge(sessions, state, matches)
-        __missing_discharge(sessions, state, matches)
-    if sessions['suspend'] is not None:
-        __close_suspend(sessions, state, matches)
+    result = int(matches.groups()[0])
+    rtc_time = matches.groups()[1]
+    if result != 0:
+        if sessions['suspend'] is not None:
+            __cancel_suspend(sessions, state, matches)
+            sessions['active'].type = 'ABORT'
+            sessions['active'].reason = 'UNKNOWN'
+            return
     else:
-        __missing_log_warning(sessions, state, 'suspend')
-    if sessions['active'] is None:
-        # display wake_up might have happened before
-        __start_active(sessions, state, matches)
-        sessions['active'].start_cc = state['resume_coulomb']
-        sessions['active'].type = 'BACKGROUND'
-        sessions['active'].reason = state['wakeup_source']
-    elif sessions['active'].reason == 'displayon':
-        if not TECH and not VERBOSE:
-            __add_onto_elem_in_dict(
-                sessions['full'].full_stats['BACKGROUND'],
-                state['wakeup_source'],
-                1,
-                0,
-                0,
-                )
-    state['wakeup_source'] = UNKNOWN
-    return
+        # Last suspend session can be closed here
+        if sessions['charge'] is not None or sessions['discharge'] is None:
+            __close_charge(sessions, state, matches)
+            __missing_discharge(sessions, state, matches)
+        if sessions['suspend'] is not None:
+            __close_suspend(sessions, state, matches)
+        else:
+            __missing_log_warning(sessions, state, 'suspend')
+        if sessions['active'] is None:
+            # display wake_up might have happened before
+            __start_active(sessions, state, matches)
+            sessions['active'].start_cc = state['resume_coulomb']
+            sessions['active'].type = 'BACKGROUND'
+            sessions['active'].reason = state['wakeup_source']
+        elif sessions['active'].reason == 'displayon':
+            if not TECH and not VERBOSE:
+                __add_onto_elem_in_dict(
+                    sessions['full'].full_stats['BACKGROUND'],
+                    state['wakeup_source'],
+                    1,
+                    0,
+                    0,
+                    )
+        state['wakeup_source'] = UNKNOWN
+        return
 
 def active_wakelock_regex_hook(sessions, state, matches):
     state['active_wakelock'] = matches.groups()[0]
@@ -728,10 +738,9 @@ def wakeup_source_regex_hook(sessions, state, matches):
     if sessions['charge'] is not None or sessions['discharge'] is None:
         __close_charge(sessions, state, matches)
         __missing_discharge(sessions, state, matches)
-    if sessions['wakeup'] is not None:
-        sessions['wakeup'] = None
-    __start_wakeup(sessions, state, matches)
-    state['wakeup_source'] = matches.groups()[0]
+    if sessions['wakeup'] is None:
+        __start_wakeup(sessions, state, matches)
+        state['wakeup_source'] = matches.groups()[0]
     return
 
 def wakeup_source_before_wakeuplock_regex_hook(sessions, state, matches):
@@ -741,6 +750,8 @@ def wakeup_source_before_wakeuplock_regex_hook(sessions, state, matches):
         __close_charge(sessions, state, matches)
         __missing_discharge(sessions, state, matches)
     state['wakeup_source'] = matches.groups()[0]
+    if sessions['wakeup'] is None:
+        __start_wakeup(sessions, state, matches)
     if sessions['active'] is None:
         __start_active(sessions, state, matches)
         sessions['active'].type = 'BACKGROUND'
@@ -937,8 +948,6 @@ def roll(fobj_in, fobj_out):
         __close_sessions(live_sessions, cur_state)
         live_sessions['full'].end = cur_state['kernel_time_stamp']
         live_sessions['full'].end_time = __current_time(cur_state)
-        live_sessions['full'].duration = __duration(live_sessions['full'])\
-            + live_sessions['full'].rtc_only
     except:
         __debug_print_all(live_sessions, cur_state)
         raise
@@ -947,6 +956,7 @@ def roll(fobj_in, fobj_out):
             live_sessions['full'].cpu1_time += __current_time(cur_state) - cur_state['cpu1_on']
         if cur_state['charging_start'] > 0:
             live_sessions['full'].usb_time += __current_time(cur_state) - cur_state['charging_start']
+        live_sessions['full'].duration = __duration(live_sessions['full'])
     return live_sessions['full']
 
 TAB_WIDTH = 8
@@ -1048,7 +1058,7 @@ def print_summary(full):
                 return
             else:
                 print 'Total log time:\t\t\t%s\t(100%%) %0.2fmA'%(
-                    total_duration,
+                    full.duration,
                     total_cost*3600/total_duration
                     )
         if full.suspend_sum.duration == 0:
@@ -1292,8 +1302,8 @@ if __name__ == "__main__":
         platxml = minidom.parseString(open(platfile).read())
         for i in BSP_REGEX.keys():
             append_regex(platxml, i, BSP_REGEX[i], REGEX)
-            interrupts = platxml.getElementsByTagName('interrupts')[0]
-            irqs = interrupts.getElementsByTagName('irq')
+        interrupts = platxml.getElementsByTagName('interrupts')[0]
+        irqs = interrupts.getElementsByTagName('irq')
         for i in irqs:
             INTERRUPTS[i.getAttribute('number')] = i.getAttribute('name')
     except:
