@@ -4,7 +4,7 @@ from xml.dom import minidom,Node
 
 SOFTWARE_NAME = 'log parser'
 AUTHOR = 'Peng Liu - <a22543@motorola.com>'
-LAST_UPDATE = 'SEP 12, 2012'
+LAST_UPDATE = 'SEP 20, 2012'
 
 ################################################################################
 # Global definitions
@@ -1247,7 +1247,7 @@ def print_summary(full):
     print '\tTop Wakeup Sources by Count'
     t = Top('count')
     t.select(session.active_stats['BACKGROUND'].values())
-    top_table(2, t.list)
+    top_table(2, t.list, names={'name':INTERRUPTS})
     print '\tTop Freezing Abort by Count'
     t = Top('count')
     t.select(session.active_stats['ABORT'].values())
@@ -1269,11 +1269,11 @@ def print_summary(full):
     print 'Top Wakeup Sources by Duration'
     t = Top('duration')
     t.select(session.active_stats['BACKGROUND'].values())
-    top_table(1, t.list)
+    top_table(1, t.list, names={'name':INTERRUPTS})
     print 'Top Wakeup Sources by Cost'
     t = Top('cost')
     t.select(session.active_stats['BACKGROUND'].values())
-    top_table(1, t.list)
+    top_table(1, t.list, names={'name':INTERRUPTS})
     print 'Top Freezing Abort by Duration'
     t = Top('duration')
     t.select(session.active_stats['ABORT'].values())
