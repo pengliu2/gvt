@@ -1,4 +1,3 @@
-#include <sys/mman.h>
 #include <fcntl.h>
 #include <errno.h>
 #include "main.h"
@@ -23,8 +22,15 @@ END_EVENT_TABLE()
 MyFrame::MyFrame()
 : wxFrame(NULL, -1, wxT("Sample"), wxDefaultPosition)
 {
+#ifdef __WXMSW__
+	m_x = NULL;
+	m_y1 = NULL;
+	m_y2 = NULL;
+#else
     m_xmap = (unsigned int*)-1;
-    m_xmap = (unsigned int*)-1;
+    m_y1map = (unsigned int*)-1;
+	m_y2map = (unsigned int*)-1;
+#endif
     m_cur1x = 0;
     m_cur2x = 0;
     wxMenu *menuFile = new wxMenu;
@@ -88,7 +94,9 @@ void MyFrame::OnOpen(wxCommandEvent& event)
     id = event.GetId();
     
     if (openFileDialog->ShowModal() == wxID_OK){
-        filename = openFileDialog->GetPath();        
+        filename = openFileDialog->GetPath();
+#ifdef __WXMSW__
+#else
         fd = open(filename.mb_str(), O_RDONLY);
         if (fd < 0){
             wxMessageDialog *dial = new wxMessageDialog(NULL,
@@ -102,6 +110,7 @@ void MyFrame::OnOpen(wxCommandEvent& event)
         } else if (id == 103){
             m_y2fd = fd;
         }
+#endif
     }
     SetStatusText(wxString::Format(_("Calling %d"), id));
 }
@@ -110,6 +119,8 @@ void MyFrame::OnStartDraw(wxCommandEvent& event)
 {
     /* memory mapping files */
     double max_x = 0, min_x = 0, third_x;
+#ifdef __WXMSW__
+#else
     if (m_xfd >= 0 && m_y1fd >= 0 && m_y2fd >= 0){
         m_xmap = (unsigned int *)mmap(NULL, 400, PROT_READ, MAP_SHARED, m_xfd, 0);
         if (m_xmap == (unsigned int*)-1){
@@ -145,6 +156,7 @@ void MyFrame::OnStartDraw(wxCommandEvent& event)
         dial->ShowModal();
         return;
     }
+#endif /* __WXMSW__ */
     
     /* Get the first X and last X */
     max_x = 2147483647;
@@ -174,6 +186,8 @@ void MyFrame::OnToggle2(wxCommandEvent& event)
 
 MyFrame::~MyFrame()
 {
+#ifdef __WXMSW__
+#else
     if (m_xmap != (unsigned int*)-1){
         munmap(m_xmap, 400);
     }
@@ -183,6 +197,7 @@ MyFrame::~MyFrame()
     if (m_y1map != (unsigned int*)-1){
         munmap(m_y1map, 400);
     }
+#endif
 }
 
 void MyFrame::move_cur1(double x)

@@ -95,7 +95,7 @@ void MyMpWindow::OnMouseMove(wxMouseEvent& event)
                 SetCursor(*wxCROSS_CURSOR);
                 m_cross_cursor2 = true;
             }
-        } else if (x1 > 1 and x2 > 1){
+        } else if ((x1 > 1) && (x2 > 1)){
             SetCursor(*wxSTANDARD_CURSOR);
             m_cross_cursor1 = false;
             m_cross_cursor2 = false;

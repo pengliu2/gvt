@@ -9,6 +9,11 @@
 #define	MYFRAME_H
 
 #include "MyMpWindow.h"
+#ifdef __WXMSW__
+#include "wxMemoryMappedFile.h"
+#else
+#include <sys/mman.h>
+#endif
 
 class MyFrame : public wxFrame
 {
@@ -21,9 +26,15 @@ public:
     void OnToggle2(wxCommandEvent& event);
     void updateStatusText(wxString str);
     void stats();
+#ifdef __WXMSW__
+	wxMemoryMappedFile * m_x;
+	wxMemoryMappedFile * m_y1;
+	wxMemoryMappedFile * m_y2;
+#else
     int m_xfd;
     int m_y1fd;
     int m_y2fd;
+#endif
     unsigned int * m_xmap;
     unsigned int * m_ymap;
     unsigned int * m_y1map;
