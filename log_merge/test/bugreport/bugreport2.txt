@@ -1,4 +1,0 @@
------- SYSTEM LOG (logcat -v threadtime -d *:v) ------
---------- beginning of /dev/log/main
-10-13 07:54:36.796  1371  1371 D PowerManager: Partial WakeLock: Acquired TAG: PollingManager isRefCounted: true Ref Count: 1 PID: 1371 UID: 10077 Held: true
------- VM TRACES JUST NOW (/data/anr/traces.txt.bugreport: 2010-10-13 08:40:04) ------
